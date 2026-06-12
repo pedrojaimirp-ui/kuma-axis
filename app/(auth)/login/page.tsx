@@ -36,6 +36,7 @@ export default function LoginPage() {
     setLoading(false)
 
     if (signInError) {
+      console.error('signInWithPassword failed:', signInError.message)
       setError('Celular o contraseña incorrectos.')
       return
     }
