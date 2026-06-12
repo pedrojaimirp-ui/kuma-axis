@@ -12,7 +12,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
   return (
     <div className="flex flex-col rounded-xl bg-white p-4 shadow-sm">
       <h3 className="text-lg font-bold text-cacao-oscuro">{pkg.name}</h3>
-      <p className="text-2xl font-bold text-kuma-dorado">${pkg.price.toLocaleString('es-CO')}</p>
+      <p className="text-2xl font-bold text-kuma-dorado">${Number(pkg.price).toLocaleString('es-CO')}</p>
       <p className="text-sm text-cacao-tostado">{pkg.bags} bolsas de 250g</p>
 
       <div className="mt-3 space-y-1 text-sm text-cacao-tostado">
