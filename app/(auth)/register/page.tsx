@@ -52,7 +52,8 @@ function RegisterForm() {
 
     let referredBy: string | null = null
     if (refCode) {
-      const { data } = await supabase.rpc('resolve_referral_code', { code: refCode })
+      const { data, error: refError } = await supabase.rpc('resolve_referral_code', { code: refCode })
+      if (refError) console.error('resolve_referral_code failed:', refError.message)
       referredBy = (data as string | null) ?? null
     }
 
