@@ -1,5 +1,5 @@
 const CACHE_NAME = 'kuma-axis-v1'
-const OFFLINE_URLS = ['/', '/manifest.json']
+const OFFLINE_URLS = ['/manifest.json', '/icons/icon.svg']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_URLS)))
