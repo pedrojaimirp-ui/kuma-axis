@@ -10,6 +10,8 @@ create table public.profiles (
   created_at timestamptz not null default now()
 );
 
+create index profiles_referred_by_idx on public.profiles (referred_by);
+
 alter table public.profiles enable row level security;
 
 create policy "profiles_select_own_or_admin" on public.profiles
@@ -27,17 +29,43 @@ create policy "profiles_insert_own" on public.profiles
 create policy "profiles_update_own" on public.profiles
   for update using (auth.uid() = id);
 
+-- prevent authenticated users from escalating their own role via the app.
+-- direct SQL editor / migration connections (auth.role() is null, no JWT
+-- claims) and service_role connections are still allowed to change role,
+-- which is required for the manual admin/owner promotion in Task 15.
+create function public.prevent_role_self_escalation()
+returns trigger as $$
+begin
+  if new.role <> old.role and auth.role() = 'authenticated' then
+    raise exception 'Cannot change your own role';
+  end if;
+  return new;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+create trigger profiles_prevent_role_escalation
+  before update on public.profiles
+  for each row execute procedure public.prevent_role_self_escalation();
+
 -- auto-create profile row on signup -------------------------------------
 create function public.handle_new_user()
 returns trigger as $$
+declare
+  referred_by_id uuid;
 begin
+  begin
+    referred_by_id := (new.raw_user_meta_data->>'referred_by')::uuid;
+  exception when invalid_text_representation then
+    referred_by_id := null;
+  end;
+
   insert into public.profiles (id, full_name, phone, referral_code, referred_by, terms_accepted_at)
   values (
     new.id,
     new.raw_user_meta_data->>'full_name',
     new.raw_user_meta_data->>'phone',
     new.raw_user_meta_data->>'referral_code',
-    (new.raw_user_meta_data->>'referred_by')::uuid,
+    referred_by_id,
     now()
   );
   return new;
