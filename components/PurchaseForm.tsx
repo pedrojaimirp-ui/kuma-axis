@@ -35,7 +35,7 @@ export function PurchaseForm({ pkg }: { pkg: Package }) {
     setLoading(true)
     setError(null)
     try {
-      await createOrder({ packageId: pkg.id, shippingAddress: address, autoRenew })
+      await createOrder({ packageCode: pkg.code, shippingAddress: address, autoRenew })
       router.push('/tienda/pedidos')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo registrar el pedido.')
