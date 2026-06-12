@@ -20,5 +20,8 @@ export async function createOrder(input: {
     status: 'pending_payment',
   })
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.error('orders insert failed:', error.message)
+    throw new Error('No se pudo registrar el pedido.')
+  }
 }
