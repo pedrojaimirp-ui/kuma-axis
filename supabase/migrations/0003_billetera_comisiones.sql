@@ -234,3 +234,13 @@ $$ language plpgsql security definer set search_path = public;
 create trigger orders_paid_unlock
   after update on public.orders
   for each row execute procedure public.handle_order_paid_unlock();
+
+-- NOTE: orders_paid_commissions and orders_paid_unlock both fire "after
+-- update on orders" for the same event. Postgres runs same-event triggers
+-- in alphabetical order by trigger name, so "orders_paid_commissions" runs
+-- before "orders_paid_unlock" — this ordering is required: commissions for
+-- upline referrers must be credited before this user's own locked balance
+-- is unlocked. If either trigger is ever renamed, preserve this ordering.
+
+-- guard against self-referral cycles in the commission chain walk
+alter table public.profiles add constraint profiles_no_self_referral check (referred_by is distinct from id);
