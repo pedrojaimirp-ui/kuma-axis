@@ -246,7 +246,8 @@ create trigger orders_paid_unlock
 alter table public.profiles add constraint profiles_no_self_referral check (referred_by is distinct from id);
 
 -- buy a package using the caller's available $KCA balance. Inserts the
--- order directly as 'paid', which fires the commission/unlock triggers above.
+-- order as 'pending_payment' then updates it to 'paid', so the
+-- commission/unlock "after update" triggers above fire naturally.
 create function public.purchase_with_balance(
   p_package_code text,
   p_shipping_address jsonb,
@@ -283,8 +284,10 @@ begin
           'Compra de paquete con saldo $KCA');
 
   insert into public.orders (user_id, package_id, shipping_address, auto_renew, status)
-  values (v_user_id, v_package_id, p_shipping_address, p_auto_renew, 'paid')
+  values (v_user_id, v_package_id, p_shipping_address, p_auto_renew, 'pending_payment')
   returning id into v_order_id;
+
+  update public.orders set status = 'paid' where id = v_order_id;
 
   return v_order_id;
 end;
