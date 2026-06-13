@@ -244,3 +244,120 @@ create trigger orders_paid_unlock
 
 -- guard against self-referral cycles in the commission chain walk
 alter table public.profiles add constraint profiles_no_self_referral check (referred_by is distinct from id);
+
+-- buy a package using the caller's available $KCA balance. Inserts the
+-- order directly as 'paid', which fires the commission/unlock triggers above.
+create function public.purchase_with_balance(
+  p_package_code text,
+  p_shipping_address jsonb,
+  p_auto_renew boolean
+)
+returns uuid as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_package_id uuid;
+  v_price numeric;
+  v_balance numeric;
+  v_order_id uuid;
+begin
+  select id, price into v_package_id, v_price
+    from public.packages where code = p_package_code;
+
+  if v_package_id is null then
+    raise exception 'Paquete no encontrado';
+  end if;
+
+  select balance_available into v_balance
+    from public.wallets where user_id = v_user_id for update;
+
+  if v_balance < v_price then
+    raise exception 'Saldo insuficiente';
+  end if;
+
+  update public.wallets
+    set balance_available = balance_available - v_price, updated_at = now()
+    where user_id = v_user_id;
+
+  insert into public.wallet_transactions (user_id, amount, type, bucket, description)
+  values (v_user_id, -v_price, 'purchase_with_balance', 'available',
+          'Compra de paquete con saldo $KCA');
+
+  insert into public.orders (user_id, package_id, shipping_address, auto_renew, status)
+  values (v_user_id, v_package_id, p_shipping_address, p_auto_renew, 'paid')
+  returning id into v_order_id;
+
+  return v_order_id;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+grant execute on function public.purchase_with_balance(text, jsonb, boolean) to authenticated;
+
+-- request a withdrawal: deducts from available balance immediately and
+-- creates a pending withdrawal_requests row for admin review.
+create function public.request_withdrawal(p_amount numeric, p_destination text)
+returns uuid as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_balance numeric;
+  v_id uuid;
+begin
+  if p_amount <= 0 then
+    raise exception 'Monto inválido';
+  end if;
+
+  select balance_available into v_balance
+    from public.wallets where user_id = v_user_id for update;
+
+  if v_balance < p_amount then
+    raise exception 'Saldo insuficiente';
+  end if;
+
+  update public.wallets
+    set balance_available = balance_available - p_amount, updated_at = now()
+    where user_id = v_user_id;
+
+  insert into public.withdrawal_requests (user_id, amount, destination)
+  values (v_user_id, p_amount, p_destination)
+  returning id into v_id;
+
+  insert into public.wallet_transactions (user_id, amount, type, bucket, related_withdrawal_id, description)
+  values (v_user_id, -p_amount, 'withdrawal_request', 'available', v_id, 'Solicitud de retiro');
+
+  return v_id;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+grant execute on function public.request_withdrawal(numeric, text) to authenticated;
+
+-- admin-only: reject a pending withdrawal and refund the user's balance.
+create function public.reject_withdrawal(p_id uuid)
+returns void as $$
+declare
+  v_user_id uuid;
+  v_amount numeric;
+begin
+  if not public.is_admin_or_owner() then
+    raise exception 'No autorizado';
+  end if;
+
+  select user_id, amount into v_user_id, v_amount
+    from public.withdrawal_requests where id = p_id and status = 'pending';
+
+  if v_user_id is null then
+    raise exception 'Solicitud no encontrada o ya revisada';
+  end if;
+
+  update public.withdrawal_requests
+    set status = 'rejected', reviewed_by = auth.uid(), reviewed_at = now()
+    where id = p_id;
+
+  update public.wallets
+    set balance_available = balance_available + v_amount, updated_at = now()
+    where user_id = v_user_id;
+
+  insert into public.wallet_transactions (user_id, amount, type, bucket, related_withdrawal_id, description)
+  values (v_user_id, v_amount, 'withdrawal_rejected', 'available', p_id, 'Retiro rechazado, saldo devuelto');
+end;
+$$ language plpgsql security definer set search_path = public;
+
+grant execute on function public.reject_withdrawal(uuid) to authenticated;
