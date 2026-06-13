@@ -44,6 +44,7 @@ export interface Order {
   package_id: string
   shipping_address: ShippingAddress
   auto_renew: boolean
+  payment_reference: string | null
   status: OrderStatus
   reviewed_by: string | null
   reviewed_at: string | null
@@ -54,6 +55,58 @@ export interface AdminOrder {
   id: string
   created_at: string
   shipping_address: ShippingAddress
+  payment_reference: string | null
   profiles: { full_name: string; phone: string } | null
   packages: { name: string; price: number } | null
+}
+
+export interface Wallet {
+  user_id: string
+  balance_available: number
+  balance_locked: number
+  updated_at: string
+}
+
+export type WalletTransactionType =
+  | 'commission_l1'
+  | 'commission_l2'
+  | 'commission_l3'
+  | 'commission_l4'
+  | 'owner_global'
+  | 'unlock'
+  | 'purchase_with_balance'
+  | 'withdrawal_request'
+  | 'withdrawal_rejected'
+
+export interface WalletTransaction {
+  id: string
+  user_id: string
+  amount: number
+  type: WalletTransactionType
+  bucket: 'available' | 'locked'
+  related_order_id: string | null
+  related_withdrawal_id: string | null
+  description: string
+  created_at: string
+}
+
+export type WithdrawalStatus = 'pending' | 'paid' | 'rejected'
+
+export interface WithdrawalRequest {
+  id: string
+  user_id: string
+  amount: number
+  destination: string
+  status: WithdrawalStatus
+  reviewed_by: string | null
+  reviewed_at: string | null
+  created_at: string
+}
+
+export interface AdminWithdrawal {
+  id: string
+  amount: number
+  destination: string
+  created_at: string
+  profiles: { full_name: string; phone: string } | null
 }
