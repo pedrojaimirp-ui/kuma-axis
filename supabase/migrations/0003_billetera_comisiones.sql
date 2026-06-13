@@ -341,7 +341,8 @@ begin
   end if;
 
   select user_id, amount into v_user_id, v_amount
-    from public.withdrawal_requests where id = p_id and status = 'pending';
+    from public.withdrawal_requests where id = p_id and status = 'pending'
+    for update;
 
   if v_user_id is null then
     raise exception 'Solicitud no encontrada o ya revisada';
