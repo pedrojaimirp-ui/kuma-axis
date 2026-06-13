@@ -24,7 +24,7 @@ export default async function AdminPage() {
 
   const { data: orders, error: ordersError } = await supabase
     .from('orders')
-    .select('id, created_at, shipping_address, profiles(full_name, phone), packages(name, price)')
+    .select('id, created_at, shipping_address, profiles!orders_user_id_fkey(full_name, phone), packages(name, price)')
     .eq('status', 'pending_payment')
     .order('created_at', { ascending: true })
 
