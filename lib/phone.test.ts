@@ -21,7 +21,7 @@ describe('isValidColombianPhone', () => {
 })
 
 describe('toSyntheticEmail', () => {
-  it('builds the kumaaxis.app synthetic email from a phone number', () => {
-    expect(toSyntheticEmail('3001234567')).toBe('3001234567@kumaaxis.app')
+  it('builds the kumaaxis.com synthetic email from a phone number', () => {
+    expect(toSyntheticEmail('3001234567')).toBe('3001234567@kumaaxis.com')
   })
 })

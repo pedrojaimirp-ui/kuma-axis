@@ -3,5 +3,5 @@ export function isValidColombianPhone(phone: string): boolean {
 }
 
 export function toSyntheticEmail(phone: string): string {
-  return `${phone}@kumaaxis.app`
+  return `${phone}@kumaaxis.com`
 }
