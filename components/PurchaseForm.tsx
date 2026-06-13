@@ -2,17 +2,14 @@
 
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { createOrder } from '@/lib/actions/orders'
+import { createOrder, purchaseWithBalance } from '@/lib/actions/orders'
 import type { Package, ShippingAddress } from '@/lib/types'
 
-const PAYMENT_METHODS = [
-  { label: 'Nequi', value: '321 358 6024' },
-  { label: 'Daviplata / Yave', value: '@DAVIPPG927' },
-  { label: 'Davivienda - Cuenta de ahorros', value: '4884 1069 8499' },
-]
+const DAVIVIENDA_ACCOUNT = '4884 1069 8499'
 
-export function PurchaseForm({ pkg }: { pkg: Package }) {
+export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availableBalance: number }) {
   const router = useRouter()
   const [step, setStep] = useState<'address' | 'payment'>('address')
   const [address, setAddress] = useState<ShippingAddress>({
@@ -22,8 +19,11 @@ export function PurchaseForm({ pkg }: { pkg: Package }) {
     telefono: '',
   })
   const [autoRenew, setAutoRenew] = useState(false)
+  const [paymentReference, setPaymentReference] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const canPayWithBalance = availableBalance >= Number(pkg.price)
 
   function handleAddressSubmit(e: FormEvent) {
     e.preventDefault()
@@ -39,10 +39,28 @@ export function PurchaseForm({ pkg }: { pkg: Package }) {
     setLoading(true)
     setError(null)
     try {
-      await createOrder({ packageCode: pkg.code, shippingAddress: address, autoRenew })
+      await createOrder({
+        packageCode: pkg.code,
+        shippingAddress: address,
+        autoRenew,
+        paymentReference: paymentReference || undefined,
+      })
       router.push('/tienda/pedidos')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo registrar el pedido.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handlePayWithBalance() {
+    setLoading(true)
+    setError(null)
+    try {
+      await purchaseWithBalance({ packageCode: pkg.code, shippingAddress: address, autoRenew })
+      router.push('/tienda/pedidos')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo completar la compra con saldo.')
     } finally {
       setLoading(false)
     }
@@ -52,19 +70,51 @@ export function PurchaseForm({ pkg }: { pkg: Package }) {
     return (
       <div className="space-y-4 rounded-xl bg-white p-4 shadow-sm">
         <h1 className="text-xl font-bold text-cacao-oscuro">Pagar {pkg.name}</h1>
+
+        {canPayWithBalance && (
+          <div className="rounded-lg bg-verde-natural/10 p-3">
+            <p className="text-sm text-cacao-tostado">
+              Tienes ${availableBalance.toLocaleString('es-CO')} $KCA disponibles.
+            </p>
+            <button
+              onClick={handlePayWithBalance}
+              disabled={loading}
+              className="mt-2 w-full rounded-lg bg-verde-natural py-2 font-semibold text-blanco-cacao hover:opacity-90 disabled:opacity-50"
+            >
+              {loading ? 'Procesando...' : `Pagar con mi saldo $KCA ($${Number(pkg.price).toLocaleString('es-CO')})`}
+            </button>
+          </div>
+        )}
+
         <p className="text-cacao-tostado">
-          Transfiere{' '}
+          O transfiere{' '}
           <span className="font-bold text-kuma-dorado">${Number(pkg.price).toLocaleString('es-CO')}</span> a
           cualquiera de estos medios:
         </p>
+
         <div className="space-y-2">
-          {PAYMENT_METHODS.map((method) => (
-            <div key={method.label} className="rounded-lg bg-blanco-cacao p-3">
-              <p className="text-sm text-cacao-tostado">{method.label}</p>
-              <p className="text-lg font-bold text-verde-natural">{method.value}</p>
-            </div>
-          ))}
+          <div className="rounded-lg bg-blanco-cacao p-3 text-center">
+            <p className="text-sm text-cacao-tostado">Escanea para pagar (Bre-B / Nequi / cualquier banco)</p>
+            <Image src="/payment-qr.png" alt="QR de pago" width={220} height={220} className="mx-auto mt-2" />
+          </div>
+          <div className="rounded-lg bg-blanco-cacao p-3">
+            <p className="text-sm text-cacao-tostado">Davivienda - Cuenta de ahorros</p>
+            <p className="text-lg font-bold text-verde-natural">{DAVIVIENDA_ACCOUNT}</p>
+          </div>
         </div>
+
+        <div>
+          <label className="block text-sm font-medium text-cacao-oscuro">
+            Número de referencia / comprobante (opcional)
+          </label>
+          <input
+            value={paymentReference}
+            onChange={(e) => setPaymentReference(e.target.value)}
+            placeholder="Ej: 123456789"
+            className="mt-1 w-full rounded-lg border border-cacao-fresco/40 px-3 py-2 focus:border-kuma-dorado focus:outline-none"
+          />
+        </div>
+
         <p className="text-sm text-cacao-tostado">
           Cuando hayas hecho la transferencia, confirma tu pedido. Un administrador verificará
           el pago.
