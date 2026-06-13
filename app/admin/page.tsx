@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { AdminOrderRow } from '@/components/AdminOrderRow'
-import type { AdminOrder } from '@/lib/types'
+import { AdminWithdrawalRow } from '@/components/AdminWithdrawalRow'
+import type { AdminOrder, AdminWithdrawal } from '@/lib/types'
 
 export default async function AdminPage() {
   const supabase = createClient()
@@ -24,12 +25,22 @@ export default async function AdminPage() {
 
   const { data: orders, error: ordersError } = await supabase
     .from('orders')
-    .select('id, created_at, shipping_address, profiles!orders_user_id_fkey(full_name, phone), packages(name, price)')
+    .select('id, created_at, shipping_address, payment_reference, profiles!orders_user_id_fkey(full_name, phone), packages(name, price)')
     .eq('status', 'pending_payment')
     .order('created_at', { ascending: true })
 
   if (ordersError) {
     console.error('orders select failed:', ordersError.message)
+  }
+
+  const { data: withdrawals, error: withdrawalsError } = await supabase
+    .from('withdrawal_requests')
+    .select('id, amount, destination, created_at, profiles(full_name, phone)')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true })
+
+  if (withdrawalsError) {
+    console.error('withdrawal_requests select failed:', withdrawalsError.message)
   }
 
   return (
@@ -39,6 +50,14 @@ export default async function AdminPage() {
         {!orders?.length && <p className="text-cacao-tostado">No hay pedidos pendientes.</p>}
         {(orders as unknown as AdminOrder[] | null)?.map((order) => (
           <AdminOrderRow key={order.id} order={order} />
+        ))}
+      </div>
+
+      <h1 className="mb-4 mt-6 text-xl font-bold text-cacao-oscuro">Retiros pendientes</h1>
+      <div className="space-y-3">
+        {!withdrawals?.length && <p className="text-cacao-tostado">No hay retiros pendientes.</p>}
+        {(withdrawals as unknown as AdminWithdrawal[] | null)?.map((w) => (
+          <AdminWithdrawalRow key={w.id} withdrawal={w} />
         ))}
       </div>
     </div>

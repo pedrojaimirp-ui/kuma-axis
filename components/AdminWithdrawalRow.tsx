@@ -1,20 +1,20 @@
 'use client'
 
 import { useState } from 'react'
-import { reviewOrder } from '@/lib/actions/admin'
-import type { AdminOrder } from '@/lib/types'
+import { reviewWithdrawal } from '@/lib/actions/admin'
+import type { AdminWithdrawal } from '@/lib/types'
 
-export function AdminOrderRow({ order }: { order: AdminOrder }) {
+export function AdminWithdrawalRow({ withdrawal }: { withdrawal: AdminWithdrawal }) {
   const [loading, setLoading] = useState<'paid' | 'rejected' | null>(null)
   const [done, setDone] = useState(false)
 
   async function handleReview(status: 'paid' | 'rejected') {
     setLoading(status)
     try {
-      await reviewOrder(order.id, status)
+      await reviewWithdrawal(withdrawal.id, status)
       setDone(true)
     } catch (err) {
-      console.error('reviewOrder failed:', err instanceof Error ? err.message : err)
+      console.error('reviewWithdrawal failed:', err instanceof Error ? err.message : err)
     } finally {
       setLoading(null)
     }
@@ -25,20 +25,12 @@ export function AdminOrderRow({ order }: { order: AdminOrder }) {
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm">
       <p className="font-semibold text-cacao-oscuro">
-        {order.profiles?.full_name} · {order.profiles?.phone}
+        {withdrawal.profiles?.full_name} · {withdrawal.profiles?.phone}
       </p>
       <p className="text-sm text-cacao-tostado">
-        {order.packages?.name} · ${order.packages ? Number(order.packages.price).toLocaleString('es-CO') : ''}
+        Monto: <span className="font-bold text-kuma-dorado">${Number(withdrawal.amount).toLocaleString('es-CO')}</span>
       </p>
-      <p className="text-sm text-cacao-tostado">
-        {order.shipping_address.calle}, {order.shipping_address.ciudad},{' '}
-        {order.shipping_address.departamento} · Tel: {order.shipping_address.telefono}
-      </p>
-      {order.payment_reference && (
-        <p className="text-sm text-cacao-tostado">
-          Referencia de pago: <span className="font-semibold text-cacao-oscuro">{order.payment_reference}</span>
-        </p>
-      )}
+      <p className="text-sm text-cacao-tostado">Destino: {withdrawal.destination}</p>
       <div className="mt-2 flex gap-2">
         <button
           onClick={() => handleReview('paid')}
