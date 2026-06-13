@@ -6,7 +6,11 @@ import { useRouter } from 'next/navigation'
 import { createOrder } from '@/lib/actions/orders'
 import type { Package, ShippingAddress } from '@/lib/types'
 
-const NEQUI_NUMBER = '300 000 0000'
+const PAYMENT_METHODS = [
+  { label: 'Nequi', value: '321 358 6024' },
+  { label: 'Daviplata / Yave', value: '@DAVIPPG927' },
+  { label: 'Davivienda - Cuenta de ahorros', value: '4884 1069 8499' },
+]
 
 export function PurchaseForm({ pkg }: { pkg: Package }) {
   const router = useRouter()
@@ -50,10 +54,17 @@ export function PurchaseForm({ pkg }: { pkg: Package }) {
         <h1 className="text-xl font-bold text-cacao-oscuro">Pagar {pkg.name}</h1>
         <p className="text-cacao-tostado">
           Transfiere{' '}
-          <span className="font-bold text-kuma-dorado">${Number(pkg.price).toLocaleString('es-CO')}</span> por
-          Nequi al número:
+          <span className="font-bold text-kuma-dorado">${Number(pkg.price).toLocaleString('es-CO')}</span> a
+          cualquiera de estos medios:
         </p>
-        <p className="text-2xl font-bold text-verde-natural">{NEQUI_NUMBER}</p>
+        <div className="space-y-2">
+          {PAYMENT_METHODS.map((method) => (
+            <div key={method.label} className="rounded-lg bg-blanco-cacao p-3">
+              <p className="text-sm text-cacao-tostado">{method.label}</p>
+              <p className="text-lg font-bold text-verde-natural">{method.value}</p>
+            </div>
+          ))}
+        </div>
         <p className="text-sm text-cacao-tostado">
           Cuando hayas hecho la transferencia, confirma tu pedido. Un administrador verificará
           el pago.
