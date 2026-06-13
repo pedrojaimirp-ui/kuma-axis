@@ -14,13 +14,23 @@ create index profiles_referred_by_idx on public.profiles (referred_by);
 
 alter table public.profiles enable row level security;
 
+-- security definer function to check admin/owner role without triggering
+-- RLS recursion on public.profiles (policies cannot safely query their own
+-- table directly).
+create function public.is_admin_or_owner()
+returns boolean as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role in ('admin', 'owner')
+  );
+$$ language sql security definer stable set search_path = public;
+
+grant execute on function public.is_admin_or_owner() to authenticated;
+
 create policy "profiles_select_own_or_admin" on public.profiles
   for select using (
     auth.uid() = id
-    or exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.role in ('admin', 'owner')
-    )
+    or public.is_admin_or_owner()
   );
 
 create policy "profiles_insert_own" on public.profiles
@@ -126,22 +136,14 @@ alter table public.orders enable row level security;
 create policy "orders_select_own_or_admin" on public.orders
   for select using (
     user_id = auth.uid()
-    or exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.role in ('admin', 'owner')
-    )
+    or public.is_admin_or_owner()
   );
 
 create policy "orders_insert_own" on public.orders
   for insert with check (user_id = auth.uid());
 
 create policy "orders_update_admin" on public.orders
-  for update using (
-    exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.role in ('admin', 'owner')
-    )
-  );
+  for update using (public.is_admin_or_owner());
 
 -- platform settings -----------------------------------------------------
 create table public.platform_settings (
@@ -153,11 +155,6 @@ create table public.platform_settings (
 alter table public.platform_settings enable row level security;
 
 create policy "platform_settings_select_admin" on public.platform_settings
-  for select using (
-    exists (
-      select 1 from public.profiles p
-      where p.id = auth.uid() and p.role in ('admin', 'owner')
-    )
-  );
+  for select using (public.is_admin_or_owner());
 
 insert into public.platform_settings (id, owner_commission_percent) values (1, 5);
