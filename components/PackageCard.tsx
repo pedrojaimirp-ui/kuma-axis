@@ -36,6 +36,12 @@ export function PackageCard({ pkg }: { pkg: Package }) {
         </p>
       )}
 
+      {pkg.max_direct_referrals && (
+        <p className="mt-1 text-xs text-cacao-fresco">
+          Puedes invitar hasta {pkg.max_direct_referrals} personas directas con este paquete.
+        </p>
+      )}
+
       <Link
         href={`/tienda/comprar/${pkg.code}`}
         className="mt-4 rounded-lg bg-kuma-dorado py-2 text-center font-semibold text-cacao-oscuro hover:opacity-90"

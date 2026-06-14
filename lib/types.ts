@@ -14,6 +14,7 @@ export interface Package {
   daily_spins: number
   referral_spins: number
   activation_requirement: ActivationRequirement | null
+  max_direct_referrals: number | null
 }
 
 export type ProfileRole = 'user' | 'admin' | 'owner'
