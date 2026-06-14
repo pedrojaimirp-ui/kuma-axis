@@ -72,7 +72,7 @@ export function RouletteClient({
       if (audio) playWin(audio)
       confetti({ colors: BRAND_CONFETTI_COLORS, particleCount: 150, spread: 100, startVelocity: 45 })
       setResultMessage(
-        `¡Endulzaste tu billetera! Ganaste $${result.prize_amount.toLocaleString('es-CO')} 🍫🎉`
+        `¡Ganaste un premio de fidelización! +${result.prize_amount.toLocaleString('es-CO')} puntos KCA 🍫🎉`
       )
       setSpinsAvailable((n) => n - 1)
     } else {
@@ -112,7 +112,7 @@ export function RouletteClient({
           disabled={spinsAvailable <= 0 || spinning}
           className="mt-4 w-full rounded-lg bg-kuma-dorado py-3 font-bold text-cacao-oscuro hover:opacity-90 disabled:opacity-50"
         >
-          {spinning ? 'Girando...' : '¡Girar la Ruleta de Cacao! 🍫'}
+          {spinning ? 'Girando...' : '¡Girar la Ruleta de Premios! 🍫'}
         </button>
 
         {resultMessage && (
@@ -121,7 +121,7 @@ export function RouletteClient({
       </div>
 
       <div className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="mb-2 text-lg font-bold text-cacao-oscuro">Tus últimos premios</h2>
+        <h2 className="mb-2 text-lg font-bold text-cacao-oscuro">Tus últimos premios de fidelización</h2>
         {!history.length && <p className="text-cacao-tostado">Todavía no has girado la ruleta.</p>}
         <div className="space-y-2">
           {history.map((h) => (

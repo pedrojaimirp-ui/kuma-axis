@@ -28,10 +28,10 @@ export function AdminWithdrawalRow({ withdrawal }: { withdrawal: AdminWithdrawal
         {withdrawal.profiles?.full_name} · {withdrawal.profiles?.phone}
       </p>
       <p className="text-sm text-cacao-tostado">
-        Monto solicitado: <span className="font-bold">${Number(withdrawal.amount).toLocaleString('es-CO')}</span>
+        Puntos canjeados: <span className="font-bold">${Number(withdrawal.amount).toLocaleString('es-CO')}</span>
       </p>
       <p className="text-sm text-cacao-tostado">
-        Comisión plataforma (5%): ${Number(withdrawal.fee_amount).toLocaleString('es-CO')}
+        Costo de procesamiento (5%): ${Number(withdrawal.fee_amount).toLocaleString('es-CO')}
       </p>
       <p className="text-sm text-cacao-tostado">
         Neto a transferir: <span className="font-bold text-kuma-dorado">${Number(withdrawal.net_amount).toLocaleString('es-CO')}</span>

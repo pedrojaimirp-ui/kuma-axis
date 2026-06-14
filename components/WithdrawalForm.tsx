@@ -31,7 +31,7 @@ export function WithdrawalForm({ available }: { available: number }) {
   if (success) {
     return (
       <p className="rounded-lg bg-verde-natural/10 p-3 text-sm text-verde-natural">
-        Tu solicitud de retiro fue registrada. Un administrador la revisará pronto.
+        Tu solicitud de redención fue registrada. Un administrador la revisará pronto.
       </p>
     )
   }
@@ -43,7 +43,7 @@ export function WithdrawalForm({ available }: { available: number }) {
         disabled={available <= 0}
         className="w-full rounded-lg bg-[#39FF14] py-3 text-lg font-bold text-cacao-oscuro hover:opacity-90 disabled:opacity-50"
       >
-        Solicitar retiro
+        Canjear puntos
       </button>
     )
   }
@@ -51,7 +51,7 @@ export function WithdrawalForm({ available }: { available: number }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3 rounded-lg bg-blanco-cacao p-3">
       <div>
-        <label className="block text-sm font-medium text-cacao-oscuro">Monto a retirar</label>
+        <label className="block text-sm font-medium text-cacao-oscuro">Puntos a canjear</label>
         <input
           required
           type="number"
