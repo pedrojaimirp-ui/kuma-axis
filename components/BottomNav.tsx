@@ -2,13 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { HomeIcon, StoreIcon, NetworkIcon, WalletIcon, RouletteIcon } from './icons/NavIcons'
 
 const ITEMS = [
-  { href: '/inicio', label: 'Inicio', icon: '🏠' },
-  { href: '/tienda', label: 'Tienda', icon: '🛒' },
-  { href: '/red', label: 'Red', icon: '🌳' },
-  { href: '/billetera', label: 'Billetera', icon: '👛' },
-  { href: '/ruleta', label: 'Ruleta', icon: '🎰' },
+  { href: '/inicio', label: 'Inicio', Icon: HomeIcon, color: '#F2B705' },
+  { href: '/tienda', label: 'Tienda', Icon: StoreIcon, color: '#C17817' },
+  { href: '/red', label: 'Red', Icon: NetworkIcon, color: '#9CCC3C' },
+  { href: '/billetera', label: 'Billetera', Icon: WalletIcon, color: '#2D6A4F' },
+  { href: '/ruleta', label: 'Ruleta', Icon: RouletteIcon, color: '#00E5FF' },
 ]
 
 export function BottomNav() {
@@ -16,18 +17,23 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 flex border-t border-cacao-fresco/20 bg-white">
-      {ITEMS.map((item) => {
-        const active = pathname.startsWith(item.href)
+      {ITEMS.map(({ href, label, Icon, color }) => {
+        const active = pathname.startsWith(href)
         return (
           <Link
-            key={item.href}
-            href={item.href}
+            key={href}
+            href={href}
             className={`flex flex-1 flex-col items-center gap-1 py-2 text-xs ${
-              active ? 'font-semibold text-kuma-dorado' : 'text-cacao-tostado'
+              active ? 'font-semibold text-cacao-oscuro' : 'text-cacao-tostado'
             }`}
           >
-            <span className="text-xl">{item.icon}</span>
-            {item.label}
+            <span
+              className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+              style={{ backgroundColor: active ? color : 'transparent', color: active ? '#FDF6EC' : color }}
+            >
+              <Icon className="h-6 w-6" />
+            </span>
+            {label}
           </Link>
         )
       })}
