@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { WithdrawalForm } from '@/components/WithdrawalForm'
-import type { Wallet, WalletTransaction } from '@/lib/types'
+import { LoyaltyPointsCard } from '@/components/LoyaltyPointsCard'
+import type { RewardVoucher, Wallet, WalletTransaction } from '@/lib/types'
 
 const TYPE_LABELS: Record<string, string> = {
   commission_l1: 'Recompensa de fidelización nivel 1',
@@ -13,7 +14,7 @@ const TYPE_LABELS: Record<string, string> = {
   purchase_with_balance: 'Compra con puntos',
   withdrawal_request: 'Solicitud de redención',
   withdrawal_rejected: 'Redención rechazada (puntos devueltos)',
-  roulette_prize: 'Premio de fidelización (ruleta)',
+  roulette_prize: 'Premio de fidelización (ruleta) — histórico',
 }
 
 export default async function BilleteraPage() {
@@ -42,22 +43,31 @@ export default async function BilleteraPage() {
     console.error('wallet_transactions select failed:', txError.message)
   }
 
+  const { data: vouchers, error: voucherError } = await supabase
+    .from('reward_vouchers')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('status', 'available')
+
+  if (voucherError) {
+    console.error('reward_vouchers select failed:', voucherError.message)
+  }
+
   const w = wallet as Wallet | null
   const available = w?.balance_available ?? 0
   const locked = w?.balance_locked ?? 0
+  const points = w?.loyalty_points_balance ?? 0
 
   return (
     <div className="space-y-4">
       <div className="rounded-xl bg-white p-4 shadow-sm">
-        <p className="text-sm text-cacao-tostado">Puntos de fidelización disponibles</p>
-        <p className="text-3xl font-bold text-verde-natural">
-          ${available.toLocaleString('es-CO')} puntos KCA
-        </p>
+        <p className="text-sm text-cacao-tostado">Comisiones por venta disponibles</p>
+        <p className="text-3xl font-bold text-kuma-dorado">${available.toLocaleString('es-CO')}</p>
 
         {locked > 0 && (
           <p className="mt-2 rounded-lg bg-cacao-fresco/10 p-3 text-sm text-cacao-tostado">
-            🔒 ${locked.toLocaleString('es-CO')} puntos KCA bloqueados — Activa tu recompra y
-            disfruta de tus recompensas.
+            🔒 ${locked.toLocaleString('es-CO')} bloqueados — Activa tu recompra y disfruta de tus
+            recompensas.
           </p>
         )}
 
@@ -65,6 +75,8 @@ export default async function BilleteraPage() {
           <WithdrawalForm available={available} />
         </div>
       </div>
+
+      <LoyaltyPointsCard points={points} vouchers={(vouchers as RewardVoucher[] | null) ?? []} />
 
       <div className="rounded-xl bg-white p-4 shadow-sm">
         <h2 className="mb-2 text-lg font-bold text-cacao-oscuro">Movimientos</h2>
