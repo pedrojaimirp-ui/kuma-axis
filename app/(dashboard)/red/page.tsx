@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ReferralLinkCard } from '@/components/ReferralLinkCard'
 import { ReferralSlotsGrid } from '@/components/ReferralSlotsGrid'
+import { NetworkLevelsCard } from '@/components/NetworkLevelsCard'
 
 const SITE_URL = 'https://kuma-axis.vercel.app'
 
@@ -41,15 +42,18 @@ export default async function RedPage() {
     maxDirectReferrals = pkg?.max_direct_referrals ?? 0
   }
 
-  const { data: referrals, error: referralsError } = await supabase
-    .from('profiles')
-    .select('id, full_name')
-    .eq('referred_by', user.id)
-    .order('created_at', { ascending: true })
+  const { data: network, error: networkError } = await supabase.rpc('get_referral_network')
 
-  if (referralsError) {
-    console.error('referrals select failed:', referralsError.message)
+  if (networkError) {
+    console.error('get_referral_network failed:', networkError.message)
   }
+
+  const networkRows = (network as { level: number; id: string; full_name: string }[] | null) ?? []
+  const directReferrals = networkRows.filter((row) => row.level === 1)
+  const levelCounts = networkRows.reduce<Record<number, number>>((acc, row) => {
+    acc[row.level] = (acc[row.level] ?? 0) + 1
+    return acc
+  }, {})
 
   return (
     <div className="space-y-4">
@@ -59,9 +63,10 @@ export default async function RedPage() {
       )}
       <ReferralSlotsGrid
         totalSlots={maxDirectReferrals}
-        referrals={(referrals as { id: string; full_name: string }[] | null) ?? []}
+        referrals={directReferrals.map(({ id, full_name }) => ({ id, full_name }))}
         unlimited={unlimited}
       />
+      <NetworkLevelsCard counts={levelCounts} />
     </div>
   )
 }
