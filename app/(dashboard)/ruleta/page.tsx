@@ -1,5 +1,34 @@
-import { ComingSoon } from '@/components/ComingSoon'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { claimDailySpins } from '@/lib/actions/roulette'
+import { RouletteClient } from '@/components/RouletteClient'
+import type { SpinHistoryEntry } from '@/lib/types'
 
-export default function RuletaPage() {
-  return <ComingSoon title="Ruleta de Recompensas" emoji="🎰" accentClass="border-acento-digital" />
+export default async function RuletaPage() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const credits = await claimDailySpins()
+
+  const { data: history, error: historyError } = await supabase
+    .from('spin_history')
+    .select('id, prize_label, prize_amount, created_at')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(5)
+
+  if (historyError) {
+    console.error('spin_history select failed:', historyError.message)
+  }
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-xl font-bold text-cacao-oscuro">Ruleta de Cacao 🍫</h1>
+      <RouletteClient
+        initialSpins={credits.daily_spins_remaining + credits.referral_spins_balance}
+        initialHistory={(history as SpinHistoryEntry[] | null) ?? []}
+      />
+    </div>
+  )
 }
