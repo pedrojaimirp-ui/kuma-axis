@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { requestWithdrawal } from '@/lib/actions/wallet'
+import { calculateWithdrawalFee, WITHDRAWAL_FEE_PERCENT } from '@/lib/constants'
 
 export function WithdrawalForm({ available }: { available: number }) {
   const [open, setOpen] = useState(false)
@@ -60,6 +61,13 @@ export function WithdrawalForm({ available }: { available: number }) {
           onChange={(e) => setAmount(e.target.value)}
           className="mt-1 w-full rounded-lg border border-cacao-fresco/40 px-3 py-2 focus:border-kuma-dorado focus:outline-none"
         />
+        {Number(amount) > 0 && (
+          <p className="mt-1 text-sm text-cacao-tostado">
+            Recibirás ${calculateWithdrawalFee(Number(amount)).net.toLocaleString('es-CO')} — se retiene{' '}
+            {WITHDRAWAL_FEE_PERCENT}% (${calculateWithdrawalFee(Number(amount)).fee.toLocaleString('es-CO')}) para
+            sostenimiento de la plataforma.
+          </p>
+        )}
       </div>
       <div>
         <label className="block text-sm font-medium text-cacao-oscuro">

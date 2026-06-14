@@ -38,19 +38,10 @@ export async function reviewWithdrawal(id: string, status: 'paid' | 'rejected') 
     return
   }
 
-  const { data, error } = await supabase
-    .from('withdrawal_requests')
-    .update({ status: 'paid', reviewed_by: user.id, reviewed_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('status', 'pending')
-    .select('id')
+  const { error } = await supabase.rpc('approve_withdrawal', { p_id: id })
 
   if (error) {
-    console.error('withdrawal_requests update failed:', error.message)
+    console.error('approve_withdrawal failed:', error.message)
     throw new Error('No se pudo actualizar el retiro.')
-  }
-
-  if (!data?.length) {
-    throw new Error('Este retiro ya fue revisado o no existe.')
   }
 }

@@ -35,12 +35,22 @@ export default async function AdminPage() {
 
   const { data: withdrawals, error: withdrawalsError } = await supabase
     .from('withdrawal_requests')
-    .select('id, amount, destination, created_at, profiles(full_name, phone)')
+    .select('id, amount, fee_amount, net_amount, destination, created_at, profiles!withdrawal_requests_user_id_fkey(full_name, phone)')
     .eq('status', 'pending')
     .order('created_at', { ascending: true })
 
   if (withdrawalsError) {
     console.error('withdrawal_requests select failed:', withdrawalsError.message)
+  }
+
+  const { data: settings, error: settingsError } = await supabase
+    .from('platform_settings')
+    .select('withdrawal_fees_accumulated')
+    .eq('id', 1)
+    .single()
+
+  if (settingsError) {
+    console.error('platform_settings select failed:', settingsError.message)
   }
 
   return (
@@ -53,7 +63,11 @@ export default async function AdminPage() {
         ))}
       </div>
 
-      <h1 className="mb-4 mt-6 text-xl font-bold text-cacao-oscuro">Retiros pendientes</h1>
+      <p className="mt-6 text-sm text-cacao-tostado">
+        💰 Fondos de sostenimiento acumulados: $
+        {Number(settings?.withdrawal_fees_accumulated ?? 0).toLocaleString('es-CO')}
+      </p>
+      <h1 className="mb-4 mt-2 text-xl font-bold text-cacao-oscuro">Retiros pendientes</h1>
       <div className="space-y-3">
         {!withdrawals?.length && <p className="text-cacao-tostado">No hay retiros pendientes.</p>}
         {(withdrawals as unknown as AdminWithdrawal[] | null)?.map((w) => (
