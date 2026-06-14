@@ -70,7 +70,7 @@ export function RouletteClient({
 
     if (result.prize_amount > 0) {
       if (audio) playWin(audio)
-      confetti({ colors: BRAND_CONFETTI_COLORS, particleCount: 12, spread: 60 })
+      confetti({ colors: BRAND_CONFETTI_COLORS, particleCount: 150, spread: 100, startVelocity: 45 })
       setResultMessage(
         `¡Endulzaste tu billetera! Ganaste $${result.prize_amount.toLocaleString('es-CO')} 🍫🎉`
       )
