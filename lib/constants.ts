@@ -27,4 +27,8 @@ export const ROULETTE_PRIZES: RoulettePrize[] = [
   { match: '$2.000', display: '🍫 $2.000', amount: 2000 },
   { match: '$3.000', display: '🍫 $3.000', amount: 3000 },
   { match: '$5.000', display: '🍫 $5.000', amount: 5000 },
+  { match: '$10.000', display: '💰 $10.000', amount: 10000 },
+  { match: '$20.000', display: '💰 $20.000', amount: 20000 },
+  { match: '$50.000', display: '💰 $50.000', amount: 50000 },
+  { match: '$100.000', display: '💰 $100.000', amount: 100000 },
 ]

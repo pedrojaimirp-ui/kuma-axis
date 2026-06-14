@@ -22,8 +22,8 @@ describe('calculateWithdrawalFee', () => {
 })
 
 describe('ROULETTE_PRIZES', () => {
-  it('has 15 prizes', () => {
-    expect(ROULETTE_PRIZES).toHaveLength(15)
+  it('has 19 prizes', () => {
+    expect(ROULETTE_PRIZES).toHaveLength(19)
   })
 
   it('starts with the free-spin prize', () => {
@@ -34,11 +34,11 @@ describe('ROULETTE_PRIZES', () => {
     })
   })
 
-  it('ends with the top $5.000 prize', () => {
-    expect(ROULETTE_PRIZES[14]).toEqual({
-      match: '$5.000',
-      display: '🍫 $5.000',
-      amount: 5000,
+  it('ends with the top $100.000 prize', () => {
+    expect(ROULETTE_PRIZES[18]).toEqual({
+      match: '$100.000',
+      display: '💰 $100.000',
+      amount: 100000,
     })
   })
 })
