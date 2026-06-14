@@ -4,11 +4,15 @@ import { useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 import { spinRoulette } from '@/lib/actions/roulette'
 import { ROULETTE_PRIZES } from '@/lib/constants'
-import { RouletteGrid } from './RouletteGrid'
+import { RouletteWheel } from './RouletteWheel'
+import { getAudioContext, playTick, playWin, playAgain } from '@/lib/sound'
 import type { SpinHistoryEntry } from '@/lib/types'
 
 const BRAND_CONFETTI_COLORS = ['#C9A84C', '#5A3A22', '#7A9A3D']
-const MIN_SPIN_DURATION_MS = 1500
+const SEGMENT_ANGLE = 360 / ROULETTE_PRIZES.length
+const SPIN_DURATION_MS = 3000
+const EXTRA_SPINS = 4
+const TICK_INTERVAL_MS = 120
 
 export function RouletteClient({
   initialSpins,
@@ -18,53 +22,61 @@ export function RouletteClient({
   initialHistory: SpinHistoryEntry[]
 }) {
   const [spinsAvailable, setSpinsAvailable] = useState(initialSpins)
-  const [landedIndex, setLandedIndex] = useState<number | null>(null)
+  const [rotation, setRotation] = useState(0)
   const [spinning, setSpinning] = useState(false)
   const [resultMessage, setResultMessage] = useState<string | null>(null)
   const [history, setHistory] = useState(initialHistory)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const tickIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+
+  function getAudio() {
+    if (!audioCtxRef.current) audioCtxRef.current = getAudioContext()
+    return audioCtxRef.current
+  }
 
   async function handleSpin() {
     if (spinsAvailable <= 0 || spinning) return
     setSpinning(true)
     setResultMessage(null)
 
-    const start = Date.now()
-    const spinPromise = spinRoulette()
-
-    let index = landedIndex ?? 0
-    intervalRef.current = setInterval(() => {
-      index = (index + 1) % ROULETTE_PRIZES.length
-      setLandedIndex(index)
-    }, 80)
+    const audio = getAudio()
+    if (audio) {
+      tickIntervalRef.current = setInterval(() => playTick(audio), TICK_INTERVAL_MS)
+    }
 
     let result: { prize_label: string; prize_amount: number }
     try {
-      result = await spinPromise
+      result = await spinRoulette()
     } catch (err) {
-      if (intervalRef.current) clearInterval(intervalRef.current)
+      if (tickIntervalRef.current) clearInterval(tickIntervalRef.current)
       setSpinning(false)
       setResultMessage(err instanceof Error ? err.message : 'No se pudo girar la ruleta.')
       return
     }
 
-    const elapsed = Date.now() - start
-    if (elapsed < MIN_SPIN_DURATION_MS) {
-      await new Promise((resolve) => setTimeout(resolve, MIN_SPIN_DURATION_MS - elapsed))
-    }
-
-    if (intervalRef.current) clearInterval(intervalRef.current)
-
     const finalIndex = ROULETTE_PRIZES.findIndex((p) => p.match === result.prize_label)
-    setLandedIndex(finalIndex >= 0 ? finalIndex : null)
+    const segmentCenter = finalIndex * SEGMENT_ANGLE + SEGMENT_ANGLE / 2
+    const targetMod = (360 - segmentCenter + 360) % 360
+    setRotation((prev) => {
+      const base = prev - (prev % 360)
+      let next = base + EXTRA_SPINS * 360 + targetMod
+      if (next <= prev) next += 360
+      return next
+    })
+
+    await new Promise((resolve) => setTimeout(resolve, SPIN_DURATION_MS))
+
+    if (tickIntervalRef.current) clearInterval(tickIntervalRef.current)
 
     if (result.prize_amount > 0) {
-      confetti({ colors: BRAND_CONFETTI_COLORS })
+      if (audio) playWin(audio)
+      confetti({ colors: BRAND_CONFETTI_COLORS, particleCount: 12, spread: 60 })
       setResultMessage(
         `¡Endulzaste tu billetera! Ganaste $${result.prize_amount.toLocaleString('es-CO')} 🍫🎉`
       )
       setSpinsAvailable((n) => n - 1)
     } else {
+      if (audio) playAgain(audio)
       setResultMessage('🍫 Casi... ¡prueba otra vez!')
     }
 
@@ -92,7 +104,7 @@ export function RouletteClient({
         </p>
 
         <div className="mt-3">
-          <RouletteGrid landedIndex={landedIndex} />
+          <RouletteWheel rotation={rotation} />
         </div>
 
         <button
