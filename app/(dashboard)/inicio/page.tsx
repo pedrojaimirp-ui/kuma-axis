@@ -46,7 +46,7 @@ export default async function InicioPage() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl bg-cacao-oscuro p-4 text-blanco-cacao shadow-sm">
+      <div className="rounded-xl bg-verde-natural p-4 text-blanco-cacao shadow-sm">
         <h1 className="text-xl font-bold text-kuma-dorado">¡Hola, {firstName}! 👋🍫</h1>
         <p className="mt-2 text-sm text-blanco-cacao/90">
           Qué alegría tenerte en la familia KÚMA. Eres parte de una red que celebra el cacao
