@@ -5,7 +5,7 @@ export function Header({ fullName }: { fullName: string }) {
     <header className="flex items-center justify-between bg-cacao-oscuro px-4 py-3 text-blanco-cacao">
       <div className="flex items-center gap-2">
         <span className="text-2xl">🍫</span>
-        <span className="text-lg font-bold text-kuma-dorado">KÚMA AXIS</span>
+        <span className="text-lg font-bold text-kuma-dorado">KÚMA CACAO AXIS</span>
       </div>
       <div className="text-right">
         <p className="text-xs text-blanco-cacao/70">{fullName}</p>

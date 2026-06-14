@@ -46,7 +46,18 @@ export default async function InicioPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-cacao-oscuro">Hola, {firstName} 👋</h1>
+      <div className="rounded-xl bg-cacao-oscuro p-4 text-blanco-cacao shadow-sm">
+        <h1 className="text-xl font-bold text-kuma-dorado">¡Hola, {firstName}! 👋🍫</h1>
+        <p className="mt-2 text-sm text-blanco-cacao/90">
+          Qué alegría tenerte en la familia KÚMA. Eres parte de una red que celebra el cacao
+          100% puro de nuestra tierra — un producto hecho con dedicación, pensado para
+          consentirte a ti y a quienes invites.
+        </p>
+        <p className="mt-2 text-sm text-blanco-cacao/90">
+          Gracias por confiar en KÚMA CACAO AXIS. Disfruta el chocolate, gira la ruleta y mira
+          crecer tu red. ¡Esto recién comienza! ✨
+        </p>
+      </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <SummaryCard label="Saldo $KCA" value="0.00" note="Disponible próximamente" accent="digital" />
         <SummaryCard label="Referidos activos" value="0" note="Disponible próximamente" accent="verde" />

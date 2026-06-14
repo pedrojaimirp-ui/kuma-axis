@@ -3,8 +3,8 @@ import { RegisterServiceWorker } from '@/components/RegisterServiceWorker'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'KÚMA AXIS',
-  description: 'Comercio en red KÚMA ETERNA — chocolate 100% cacao',
+  title: 'KÚMA CACAO AXIS',
+  description: 'Comercio en red KÚMA ETERNA — chocolate 100% cacao puro',
   manifest: '/manifest.json',
 }
 
