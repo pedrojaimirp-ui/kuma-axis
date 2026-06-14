@@ -96,6 +96,8 @@ export interface WithdrawalRequest {
   id: string
   user_id: string
   amount: number
+  fee_amount: number
+  net_amount: number
   destination: string
   status: WithdrawalStatus
   reviewed_by: string | null
@@ -106,6 +108,8 @@ export interface WithdrawalRequest {
 export interface AdminWithdrawal {
   id: string
   amount: number
+  fee_amount: number
+  net_amount: number
   destination: string
   created_at: string
   profiles: { full_name: string; phone: string } | null
