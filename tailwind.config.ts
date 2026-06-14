@@ -5,12 +5,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'cacao-mazorca': '#7A9A3D',
-        'kuma-dorado': '#C9A84C',
-        'cacao-fresco': '#8B5E34',
+        'cacao-mazorca': '#9CCC3C',
+        'kuma-dorado': '#F2B705',
+        'cacao-fresco': '#C17817',
         'cacao-tostado': '#5A3A22',
         'cacao-oscuro': '#3B1A0A',
-        'verde-natural': '#1B4332',
+        'verde-natural': '#2D6A4F',
         'blanco-cacao': '#FDF6EC',
         'acento-digital': '#00E5FF',
       },

@@ -3,8 +3,13 @@ import { ROULETTE_PRIZES } from '@/lib/constants'
 const SEGMENT_ANGLE = 360 / ROULETTE_PRIZES.length
 const CENTER = 150
 const RADIUS = 145
-const LABEL_RADIUS = 95
-const SEGMENT_COLORS = ['#5A3A22', '#C9A84C']
+const LABEL_RADIUS = 90
+const SEGMENT_COLORS = [
+  { bg: '#F2B705', text: '#3B1A0A' },
+  { bg: '#2D6A4F', text: '#FDF6EC' },
+  { bg: '#C17817', text: '#FDF6EC' },
+  { bg: '#9CCC3C', text: '#3B1A0A' },
+]
 
 function polarToCartesian(angleDeg: number, radius: number) {
   const angleRad = ((angleDeg - 90) * Math.PI) / 180
@@ -46,28 +51,29 @@ export function RouletteWheel({ rotation }: { rotation: number }) {
           const startAngle = i * SEGMENT_ANGLE
           const endAngle = startAngle + SEGMENT_ANGLE
           const midAngle = startAngle + SEGMENT_ANGLE / 2
-          const labelPos = polarToCartesian(midAngle, LABEL_RADIUS)
-          const isDark = i % 2 === 0
+          const colors = SEGMENT_COLORS[i % SEGMENT_COLORS.length]
           return (
             <g key={prize.match}>
               <path
                 d={describeSegment(startAngle, endAngle)}
-                fill={SEGMENT_COLORS[i % 2]}
+                fill={colors.bg}
                 stroke="#FDF6EC"
                 strokeWidth={1}
               />
-              <text
-                x={labelPos.x}
-                y={labelPos.y}
-                fill={isDark ? '#FDF6EC' : '#3B1A0A'}
-                fontSize={11}
-                fontWeight={700}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                transform={`rotate(${midAngle}, ${labelPos.x}, ${labelPos.y})`}
-              >
-                {prize.display}
-              </text>
+              <g transform={`rotate(${midAngle} ${CENTER} ${CENTER})`}>
+                <text
+                  x={CENTER}
+                  y={CENTER - LABEL_RADIUS}
+                  fill={colors.text}
+                  fontSize={11}
+                  fontWeight={700}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  transform={`rotate(-90 ${CENTER} ${CENTER - LABEL_RADIUS})`}
+                >
+                  {prize.display}
+                </text>
+              </g>
             </g>
           )
         })}
