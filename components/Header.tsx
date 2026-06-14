@@ -1,3 +1,5 @@
+import { SignOutButton } from './SignOutButton'
+
 export function Header({ fullName }: { fullName: string }) {
   return (
     <header className="flex items-center justify-between bg-cacao-oscuro px-4 py-3 text-blanco-cacao">
@@ -8,6 +10,7 @@ export function Header({ fullName }: { fullName: string }) {
       <div className="text-right">
         <p className="text-xs text-blanco-cacao/70">{fullName}</p>
         <p className="font-semibold text-acento-digital">0.00 $KCA</p>
+        <SignOutButton />
       </div>
     </header>
   )
