@@ -41,7 +41,7 @@ export function WithdrawalForm({ available }: { available: number }) {
       <button
         onClick={() => setOpen(true)}
         disabled={available <= 0}
-        className="w-full rounded-lg bg-cacao-tostado py-2 font-semibold text-blanco-cacao hover:opacity-90 disabled:opacity-50"
+        className="w-full rounded-lg bg-[#39FF14] py-3 text-lg font-bold text-cacao-oscuro hover:opacity-90 disabled:opacity-50"
       >
         Solicitar retiro
       </button>

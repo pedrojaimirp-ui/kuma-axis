@@ -24,7 +24,7 @@ export default async function RuletaPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-cacao-oscuro">Ruleta de Cacao 🍫</h1>
+      <h1 className="text-xl font-bold text-cacao-oscuro">Ruleta de Premios 🍫</h1>
       <RouletteClient
         initialSpins={credits.daily_spins_remaining + credits.referral_spins_balance}
         initialHistory={(history as SpinHistoryEntry[] | null) ?? []}
