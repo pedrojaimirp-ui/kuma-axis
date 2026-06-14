@@ -1,7 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { PurchaseForm } from '@/components/PurchaseForm'
-import type { Package, Wallet } from '@/lib/types'
+import type { Package, RewardVoucher, Wallet } from '@/lib/types'
 
 export default async function ComprarPage({ params }: { params: { code: string } }) {
   const supabase = createClient()
@@ -30,5 +30,24 @@ export default async function ComprarPage({ params }: { params: { code: string }
     console.error('wallets select failed:', walletError.message)
   }
 
-  return <PurchaseForm pkg={pkg as Package} availableBalance={(wallet as Wallet | null)?.balance_available ?? 0} />
+  const { data: voucher, error: voucherError } = await supabase
+    .from('reward_vouchers')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('status', 'available')
+    .order('discount_amount', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (voucherError) {
+    console.error('reward_vouchers select failed:', voucherError.message)
+  }
+
+  return (
+    <PurchaseForm
+      pkg={pkg as Package}
+      availableBalance={(wallet as Wallet | null)?.balance_available ?? 0}
+      voucher={(voucher as RewardVoucher | null) ?? null}
+    />
+  )
 }

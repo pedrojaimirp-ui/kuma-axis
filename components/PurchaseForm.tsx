@@ -5,11 +5,19 @@ import type { FormEvent } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { createOrder, purchaseWithBalance } from '@/lib/actions/orders'
-import type { Package, ShippingAddress } from '@/lib/types'
+import type { Package, RewardVoucher, ShippingAddress } from '@/lib/types'
 
 const DAVIVIENDA_ACCOUNT = '4884 1069 8499'
 
-export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availableBalance: number }) {
+export function PurchaseForm({
+  pkg,
+  availableBalance,
+  voucher,
+}: {
+  pkg: Package
+  availableBalance: number
+  voucher: RewardVoucher | null
+}) {
   const router = useRouter()
   const [step, setStep] = useState<'address' | 'payment'>('address')
   const [address, setAddress] = useState<ShippingAddress>({
@@ -19,11 +27,14 @@ export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availabl
     telefono: '',
   })
   const [autoRenew, setAutoRenew] = useState(false)
+  const [applyVoucher, setApplyVoucher] = useState(Boolean(voucher))
   const [paymentReference, setPaymentReference] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const canPayWithBalance = availableBalance >= Number(pkg.price)
+  const discount = voucher && applyVoucher ? voucher.discount_amount : 0
+  const finalPrice = Math.max(Number(pkg.price) - discount, 0)
+  const canPayWithBalance = availableBalance >= finalPrice
 
   function handleAddressSubmit(e: FormEvent) {
     e.preventDefault()
@@ -44,6 +55,7 @@ export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availabl
         shippingAddress: address,
         autoRenew,
         paymentReference: paymentReference || undefined,
+        voucherId: voucher && applyVoucher ? voucher.id : undefined,
       })
       router.push('/tienda/pedidos')
     } catch (err) {
@@ -57,7 +69,12 @@ export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availabl
     setLoading(true)
     setError(null)
     try {
-      await purchaseWithBalance({ packageCode: pkg.code, shippingAddress: address, autoRenew })
+      await purchaseWithBalance({
+        packageCode: pkg.code,
+        shippingAddress: address,
+        autoRenew,
+        voucherId: voucher && applyVoucher ? voucher.id : undefined,
+      })
       router.push('/tienda/pedidos')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo completar la compra con saldo.')
@@ -71,6 +88,21 @@ export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availabl
       <div className="space-y-4 rounded-xl bg-white p-4 shadow-sm">
         <h1 className="text-xl font-bold text-cacao-oscuro">Pagar {pkg.name}</h1>
 
+        {voucher && (
+          <label className="flex items-start gap-2 rounded-lg bg-verde-natural/10 p-3 text-sm text-cacao-oscuro">
+            <input
+              type="checkbox"
+              checked={applyVoucher}
+              onChange={(e) => setApplyVoucher(e.target.checked)}
+              className="mt-1"
+            />
+            <span>
+              Tienes un cupón de <strong>${voucher.discount_amount.toLocaleString('es-CO')}</strong> de
+              descuento disponible. Se aplicará a esta compra.
+            </span>
+          </label>
+        )}
+
         {canPayWithBalance && (
           <div className="rounded-lg bg-verde-natural/10 p-3">
             <p className="text-sm text-cacao-tostado">
@@ -81,14 +113,14 @@ export function PurchaseForm({ pkg, availableBalance }: { pkg: Package; availabl
               disabled={loading}
               className="mt-2 w-full rounded-lg bg-verde-natural py-2 font-semibold text-blanco-cacao hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? 'Procesando...' : `Pagar con mis puntos KCA ($${Number(pkg.price).toLocaleString('es-CO')})`}
+              {loading ? 'Procesando...' : `Pagar con mis puntos KCA ($${finalPrice.toLocaleString('es-CO')})`}
             </button>
           </div>
         )}
 
         <p className="text-cacao-tostado">
           O transfiere{' '}
-          <span className="font-bold text-kuma-dorado">${Number(pkg.price).toLocaleString('es-CO')}</span> a
+          <span className="font-bold text-kuma-dorado">${finalPrice.toLocaleString('es-CO')}</span> a
           cualquiera de estos medios:
         </p>
 
