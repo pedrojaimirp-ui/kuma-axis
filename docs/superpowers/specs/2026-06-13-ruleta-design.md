@@ -308,13 +308,29 @@ commission/unlock triggers.
 Add `canvas-confetti` (and `@types/canvas-confetti` as a dev dependency) via
 npm.
 
+### Chocolate theming
+
+The whole feature is themed around cacao/chocolate (KÚMA ETERNA's brand),
+not a generic casino:
+
+- Page title: **"Ruleta de Cacao 🍫"** (not "Ruleta de Recompensas 🎰").
+- Each grid cell shows **🍫 + amount** (e.g. `"🍫 $200"`), and the
+  "Vuelve y juega" cell shows `"🍫 Otra vez"`.
+- Spin button label: **"¡Girar la Ruleta de Cacao! 🍫"**.
+- Win message (amount > 0): `"¡Endulzaste tu billetera! Ganaste $X 🍫🎉"`.
+- "Vuelve y juega" message: `"🍫 Casi... ¡prueba otra vez!"` (no confetti).
+- `confetti()` is called with `colors` set to the brand palette (kuma-dorado
+  `#D4A017`-style gold and cacao-tostado brown — exact hex values pulled from
+  `tailwind.config.ts` at implementation time) instead of default rainbow
+  colors.
+
 ### Interaction flow
 
 1. Page load: `claimDailySpins()` runs server-side, returns current spin
    counts. Page renders `RouletteGrid` (always visible, all 15 cells with
-   their labels) + spins-available text + "Girar" button (disabled if 0
-   spins).
-2. Click "Girar": button disables, client starts a `setInterval` that moves
+   their labels) + spins-available text + "¡Girar la Ruleta de Cacao! 🍫"
+   button (disabled if 0 spins).
+2. Click the button: it disables, client starts a `setInterval` that moves
    a highlighted-cell index forward every ~80ms (cycling through all 15
    cells), while calling `spinRoulette()` server action in parallel.
 3. When `spinRoulette()` resolves with `{ prize_label, prize_amount }`: the
@@ -323,12 +339,13 @@ npm.
    exactly on that cell (increase interval delay for the last few steps to
    simulate deceleration).
 4. On stop: highlight the landed cell in gold. If `prize_amount > 0`, fire
-   `confetti()` and show `"¡Ganaste $X! 🎉"`; if it's "Vuelve y juega", show
-   `"🔄 ¡Vuelve y juega! Ganaste un giro gratis"` (no confetti) and increment
-   the displayed spins-available count by 1.
+   `confetti()` (brand colors) and show
+   `"¡Endulzaste tu billetera! Ganaste $X 🍫🎉"`; if it's "Vuelve y juega",
+   show `"🍫 Casi... ¡prueba otra vez!"` (no confetti) and increment the
+   displayed spins-available count by 1.
 5. Prepend the new result to "Tus últimos premios" (client-side state, no
    refetch needed).
-6. Re-enable "Girar" if spins remain.
+6. Re-enable the spin button if spins remain.
 
 ### Wallet balance update
 
