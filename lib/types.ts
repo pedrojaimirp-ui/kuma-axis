@@ -77,6 +77,7 @@ export type WalletTransactionType =
   | 'purchase_with_balance'
   | 'withdrawal_request'
   | 'withdrawal_rejected'
+  | 'roulette_prize'
 
 export interface WalletTransaction {
   id: string
@@ -113,4 +114,16 @@ export interface AdminWithdrawal {
   destination: string
   created_at: string
   profiles: { full_name: string; phone: string } | null
+}
+
+export interface SpinCredits {
+  daily_spins_remaining: number
+  referral_spins_balance: number
+}
+
+export interface SpinHistoryEntry {
+  id: string
+  prize_label: string
+  prize_amount: number
+  created_at: string
 }
