@@ -32,3 +32,52 @@ export const ROULETTE_PRIZES: RoulettePrize[] = [
   { match: '$50.000', display: '💰 $50.000', amount: 50000 },
   { match: '$100.000', display: '💰 $100.000', amount: 100000 },
 ]
+
+export type RewardCode = 'extra_spin' | 'discount_5000' | 'discount_10000' | 'free_bag'
+
+export interface RewardCatalogItem {
+  code: RewardCode
+  label: string
+  description: string
+  pointsCost: number
+  kind: 'extra_spin' | 'voucher'
+  voucherDiscount?: number
+}
+
+export const REWARD_CATALOG: RewardCatalogItem[] = [
+  {
+    code: 'extra_spin',
+    label: '🎰 1 giro extra de ruleta',
+    description: 'Suma un giro adicional a tu ruleta de fidelización.',
+    pointsCost: 50,
+    kind: 'extra_spin',
+  },
+  {
+    code: 'discount_5000',
+    label: '🎟️ $5.000 de descuento',
+    description: 'Cupón de $5.000 de descuento en tu próxima compra.',
+    pointsCost: 500,
+    kind: 'voucher',
+    voucherDiscount: 5000,
+  },
+  {
+    code: 'discount_10000',
+    label: '🎟️ $10.000 de descuento',
+    description: 'Cupón de $10.000 de descuento en tu próxima compra.',
+    pointsCost: 1000,
+    kind: 'voucher',
+    voucherDiscount: 10000,
+  },
+  {
+    code: 'free_bag',
+    label: '🍫 1 bolsa de chocolate gratis (250g)',
+    description: 'Cupón equivalente al valor de una bolsa, aplicado como descuento en tu próxima compra.',
+    pointsCost: 1800,
+    kind: 'voucher',
+    voucherDiscount: 15000,
+  },
+]
+
+export const REWARD_CATALOG_BY_CODE: Record<RewardCode, RewardCatalogItem> = Object.fromEntries(
+  REWARD_CATALOG.map((item) => [item.code, item])
+) as Record<RewardCode, RewardCatalogItem>
