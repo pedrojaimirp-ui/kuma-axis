@@ -65,6 +65,7 @@ export interface Wallet {
   user_id: string
   balance_available: number
   balance_locked: number
+  loyalty_points_balance: number
   updated_at: string
 }
 
@@ -126,5 +127,26 @@ export interface SpinHistoryEntry {
   id: string
   prize_label: string
   prize_amount: number
+  created_at: string
+}
+
+export type RewardVoucherStatus = 'available' | 'used'
+
+export interface RewardVoucher {
+  id: string
+  user_id: string
+  discount_amount: number
+  status: RewardVoucherStatus
+  source_reward_code: string
+  used_order_id: string | null
+  created_at: string
+  used_at: string | null
+}
+
+export interface RewardRedemption {
+  id: string
+  user_id: string
+  reward_code: string
+  points_spent: number
   created_at: string
 }
