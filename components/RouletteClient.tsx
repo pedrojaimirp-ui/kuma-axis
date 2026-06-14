@@ -72,7 +72,7 @@ export function RouletteClient({
       if (audio) playWin(audio)
       confetti({ colors: BRAND_CONFETTI_COLORS, particleCount: 150, spread: 100, startVelocity: 45 })
       setResultMessage(
-        `¡Ganaste un premio de fidelización! +${result.prize_amount.toLocaleString('es-CO')} puntos KCA 🍫🎉`
+        `¡Ganaste un premio de fidelización! +${result.prize_amount.toLocaleString('es-CO')} puntos de fidelización 🍫🎉`
       )
       setSpinsAvailable((n) => n - 1)
     } else {
@@ -127,7 +127,7 @@ export function RouletteClient({
           {history.map((h) => (
             <div key={h.id} className="flex items-center justify-between border-b border-cacao-fresco/10 pb-2 text-sm">
               <p className="text-cacao-oscuro">
-                {h.prize_amount > 0 ? `🍫 $${h.prize_amount.toLocaleString('es-CO')}` : '🍫 Otra vez'}
+                {h.prize_amount > 0 ? `🍫 +${h.prize_amount.toLocaleString('es-CO')} pts` : '🍫 Otra vez'}
               </p>
               <p className="text-cacao-tostado">{new Date(h.created_at).toLocaleDateString('es-CO')}</p>
             </div>
