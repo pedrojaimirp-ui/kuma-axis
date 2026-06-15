@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { HomeIcon, StoreIcon, NetworkIcon, WalletIcon, RouletteIcon } from './icons/NavIcons'
+import { HomeIcon, StoreIcon, NetworkIcon, WalletIcon, RouletteIcon, AdminIcon } from './icons/NavIcons'
 
 const ITEMS = [
   { href: '/inicio', label: 'Inicio', Icon: HomeIcon, color: '#F2B705' },
@@ -12,12 +12,15 @@ const ITEMS = [
   { href: '/ruleta', label: 'Ruleta', Icon: RouletteIcon, color: '#00E5FF' },
 ]
 
-export function BottomNav() {
+const ADMIN_ITEM = { href: '/admin', label: 'Admin', Icon: AdminIcon, color: '#8E5A2D' }
+
+export function BottomNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname()
+  const items = isAdmin ? [...ITEMS, ADMIN_ITEM] : ITEMS
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 flex border-t border-cacao-fresco/20 bg-white">
-      {ITEMS.map(({ href, label, Icon, color }) => {
+      {items.map(({ href, label, Icon, color }) => {
         const active = pathname.startsWith(href)
         return (
           <Link

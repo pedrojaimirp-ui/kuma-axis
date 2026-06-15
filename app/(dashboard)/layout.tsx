@@ -10,7 +10,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('full_name')
+    .select('full_name, role')
     .eq('id', user.id)
     .single()
 
@@ -18,11 +18,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
     console.error('profiles select failed:', profileError.message)
   }
 
+  const isAdmin = !!profile && ['admin', 'owner'].includes(profile.role)
+
   return (
     <div className="min-h-screen bg-blanco-cacao pb-16">
       <Header fullName={profile?.full_name ?? ''} />
       <main className="px-4 py-4">{children}</main>
-      <BottomNav />
+      <BottomNav isAdmin={isAdmin} />
     </div>
   )
 }
