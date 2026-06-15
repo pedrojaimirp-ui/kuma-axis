@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { AdminOrderRow } from '@/components/AdminOrderRow'
 import { AdminWithdrawalRow } from '@/components/AdminWithdrawalRow'
 import { AdminPaidOrderRow } from '@/components/AdminPaidOrderRow'
-import type { AdminOrder, AdminWithdrawal } from '@/lib/types'
+import { AdminReturnRow } from '@/components/AdminReturnRow'
+import type { AdminOrder, AdminWithdrawal, AdminReturnRequest } from '@/lib/types'
 
 export default async function AdminPage() {
   const supabase = createClient()
@@ -44,6 +45,16 @@ export default async function AdminPage() {
     console.error('paid orders select failed:', paidOrdersError.message)
   }
 
+  const { data: returnRequests, error: returnRequestsError } = await supabase
+    .from('return_requests')
+    .select('id, reason, created_at, orders(id, packages(name)), profiles!return_requests_user_id_fkey(full_name, phone)')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true })
+
+  if (returnRequestsError) {
+    console.error('return_requests select failed:', returnRequestsError.message)
+  }
+
   const { data: withdrawals, error: withdrawalsError } = await supabase
     .from('withdrawal_requests')
     .select('id, amount, fee_amount, net_amount, destination, created_at, profiles!withdrawal_requests_user_id_fkey(full_name, phone)')
@@ -79,6 +90,14 @@ export default async function AdminPage() {
         {!paidOrders?.length && <p className="text-cacao-tostado">No hay pedidos pagados pendientes de entrega.</p>}
         {(paidOrders as unknown as AdminOrder[] | null)?.map((order) => (
           <AdminPaidOrderRow key={order.id} order={order} />
+        ))}
+      </div>
+
+      <h1 className="mb-4 mt-6 text-xl font-bold text-cacao-oscuro">Devoluciones pendientes</h1>
+      <div className="space-y-3">
+        {!returnRequests?.length && <p className="text-cacao-tostado">No hay devoluciones pendientes.</p>}
+        {(returnRequests as unknown as AdminReturnRequest[] | null)?.map((r) => (
+          <AdminReturnRow key={r.id} request={r} />
         ))}
       </div>
 
