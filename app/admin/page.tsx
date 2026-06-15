@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { AdminOrderRow } from '@/components/AdminOrderRow'
 import { AdminWithdrawalRow } from '@/components/AdminWithdrawalRow'
+import { AdminPaidOrderRow } from '@/components/AdminPaidOrderRow'
 import type { AdminOrder, AdminWithdrawal } from '@/lib/types'
 
 export default async function AdminPage() {
@@ -33,6 +34,16 @@ export default async function AdminPage() {
     console.error('orders select failed:', ordersError.message)
   }
 
+  const { data: paidOrders, error: paidOrdersError } = await supabase
+    .from('orders')
+    .select('id, created_at, shipping_address, payment_reference, profiles!orders_user_id_fkey(full_name, phone), packages(name, price)')
+    .eq('status', 'paid')
+    .order('created_at', { ascending: true })
+
+  if (paidOrdersError) {
+    console.error('paid orders select failed:', paidOrdersError.message)
+  }
+
   const { data: withdrawals, error: withdrawalsError } = await supabase
     .from('withdrawal_requests')
     .select('id, amount, fee_amount, net_amount, destination, created_at, profiles!withdrawal_requests_user_id_fkey(full_name, phone)')
@@ -60,6 +71,14 @@ export default async function AdminPage() {
         {!orders?.length && <p className="text-cacao-tostado">No hay pedidos pendientes.</p>}
         {(orders as unknown as AdminOrder[] | null)?.map((order) => (
           <AdminOrderRow key={order.id} order={order} />
+        ))}
+      </div>
+
+      <h1 className="mb-4 mt-6 text-xl font-bold text-cacao-oscuro">Pedidos pagados por entregar</h1>
+      <div className="space-y-3">
+        {!paidOrders?.length && <p className="text-cacao-tostado">No hay pedidos pagados pendientes de entrega.</p>}
+        {(paidOrders as unknown as AdminOrder[] | null)?.map((order) => (
+          <AdminPaidOrderRow key={order.id} order={order} />
         ))}
       </div>
 
