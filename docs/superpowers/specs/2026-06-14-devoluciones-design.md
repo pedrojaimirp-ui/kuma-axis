@@ -21,8 +21,10 @@ devolución ni para que el administrador la revise.
    obligatorio** (texto libre). La solicitud queda pendiente de revisión del admin.
 3. El plazo de 5 días hábiles (lunes a viernes, sin festivos) se cuenta desde la fecha
    de entrega. Pasado ese plazo, ya no se puede solicitar devolución para ese pedido.
-4. Si el admin aprueba la devolución, el precio del paquete se **acredita al saldo
-   disponible** de la billetera del cliente (mismo mecanismo que una comisión).
+4. Si el admin aprueba la devolución, se **acredita al saldo disponible** de la
+   billetera del cliente el precio del paquete **menos el costo de envío** de ese
+   paquete (mismo mecanismo que una comisión). El costo de envío no es reembolsable
+   porque ya se incurrió en él para hacer llegar el producto al cliente.
 5. Las comisiones (L1-L4) ya pagadas a la red por ese pedido **no se revierten**. KÚMA
    absorbe el costo del reembolso desde su margen. Esto es deliberado: evita saldos
    negativos en las billeteras de otros usuarios y mantiene la implementación simple.
@@ -30,6 +32,17 @@ devolución ni para que el administrador la revise.
    (producto sin abrir, empaque original).
 
 ## Cambios en base de datos
+
+### `packages`
+
+Nueva columna `shipping_cost numeric not null default 0` — costo de envío de cada
+paquete, no reembolsable en caso de devolución.
+
+| Paquete | `shipping_cost` |
+|---|---|
+| Personal | 10000 |
+| Pareja | 15000 |
+| Familiar | 20000 |
 
 ### `orders`
 
@@ -87,10 +100,10 @@ directo del cliente — mismo patrón que `withdrawal_requests` tras `0005_rls_h
 - Actualiza `return_requests.status = 'approved'`, `reviewed_by = auth.uid()`,
   `reviewed_at = now()`.
 - Actualiza `orders.status = 'returned'` para el pedido asociado.
-- Acredita el precio del paquete (`packages.price` del pedido) a
+- Acredita `packages.price - packages.shipping_cost` (del paquete del pedido) a
   `wallets.balance_available` del cliente, y registra un `wallet_transactions` con
   `type = 'return_refund'`, `bucket = 'available'`, descripción
-  "Reembolso por devolución de pedido".
+  "Reembolso por devolución de pedido (envío no reembolsable)".
 
 ### `reject_return(p_return_id uuid)`
 - Solo admin/owner.
