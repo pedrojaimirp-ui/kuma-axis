@@ -101,7 +101,7 @@ function RegisterForm() {
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg">
         <h1 className="text-center text-2xl font-bold text-cacao-oscuro">KÚMA CACAO AXIS</h1>
         <p className="mb-6 text-center text-sm text-cacao-fresco">
-          🍫 Red de consumo 100% cacao puro
+          {refCode ? '🍫 Red de consumo 100% cacao puro' : '🍫 Crea tu cuenta para comprar chocolate 100% cacao'}
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
