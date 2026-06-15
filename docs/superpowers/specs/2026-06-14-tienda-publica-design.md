@@ -70,6 +70,69 @@ La cuenta creada sin `?ref=` es una cuenta normal: tiene su propio
 `referred_by = null`. Esto es exactamente la evidencia que pide el punto
 #7: ventas a clientes que no entraron buscando comisiones.
 
+## Lineamientos legales de copy (blindaje)
+
+Releyendo el punto 0 del marco legal ("¿de dónde sale la ganancia de cada
+persona?"), el riesgo no es solo *que exista* un registro sin referido,
+sino que el **texto** que ve ese visitante siga sonando a "únete a un
+negocio" en vez de "compra un producto". Por eso, en la landing pública y
+en el registro sin `?ref=`, se aplican estas reglas de redacción:
+
+**Evitar por completo** (aunque se usen en otras partes de la app para
+usuarios ya dentro de la red): "red", "comisión", "nivel", "referido",
+"inversión", "rendimiento", "ganancia", "patrocinador", "afiliado",
+"activar"/"activación".
+
+**Usar en su lugar:** "cliente", "comprar", "pedido", "producto",
+"chocolate 100% cacao", "crear tu cuenta".
+
+### Texto exacto — Landing pública (`/`, sin sesión)
+
+```
+KÚMA — Chocolate 100% cacao
+
+Chocolate puro, sin aditivos, hecho con cacao real.
+
+[Tarjetas de paquetes, una por cada fila de `packages`:]
+  {name}
+  {bags} bolsas de 250 g
+  ${price}
+
+[Botón primario]  Crear cuenta y comprar
+[Botón secundario] Ya tengo cuenta
+
+Nota al pie (texto pequeño):
+Al crear tu cuenta podrás comprar chocolate KÚMA. Si más adelante quieres
+recomendar KÚMA a otras personas, podrás compartir tu propio enlace desde
+la sección "Red" de la app.
+```
+
+La nota al pie es intencional: deja claro que **comprar no implica entrar
+a ningún programa**, y que la posibilidad de referir es algo opcional que
+se descubre *después*, no la puerta de entrada.
+
+### Texto exacto — `/register` sin `?ref=`
+
+```
+KÚMA CACAO AXIS
+🍫 Crea tu cuenta para comprar chocolate 100% cacao
+```
+
+### Texto exacto — `/register` con `?ref=` (sin cambios)
+
+```
+KÚMA CACAO AXIS
+🍫 Red de consumo 100% cacao puro
+```
+
+### Aclaración importante
+
+Este cambio **no sustituye** los puntos #1 (política de tratamiento de
+datos / SAS) ni #3 (contrato de distribuidor en los T&C) del marco legal,
+que siguen pendientes y dependen de texto legal redactado por un
+abogado/contador. El punto #7 es una pieza independiente: demuestra que
+*existe un camino de compra sin red*, no resuelve los demás puntos.
+
 ## Fuera de alcance (YAGNI)
 
 - Checkout como invitado (sin cuenta) — requeriría rediseñar RLS de
