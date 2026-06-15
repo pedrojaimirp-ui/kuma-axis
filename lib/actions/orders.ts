@@ -97,3 +97,24 @@ export async function purchaseWithBalance(input: {
       : 'No se pudo completar la compra con saldo.')
   }
 }
+
+export async function requestReturn(orderId: string, reason: string) {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('No autenticado')
+
+  const trimmedReason = reason.trim()
+  if (!trimmedReason) {
+    throw new Error('Debes indicar un motivo para la devolución.')
+  }
+
+  const { error } = await supabase.rpc('request_return', {
+    p_order_id: orderId,
+    p_reason: trimmedReason,
+  })
+
+  if (error) {
+    console.error('request_return failed:', error.message)
+    throw new Error(error.message)
+  }
+}
