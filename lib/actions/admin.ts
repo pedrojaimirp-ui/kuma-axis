@@ -45,3 +45,30 @@ export async function reviewWithdrawal(id: string, status: 'paid' | 'rejected') 
     throw new Error('No se pudo actualizar el retiro.')
   }
 }
+
+export async function markOrderDelivered(orderId: string) {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('No autenticado')
+
+  const { error } = await supabase.rpc('mark_order_delivered', { p_order_id: orderId })
+
+  if (error) {
+    console.error('mark_order_delivered failed:', error.message)
+    throw new Error('No se pudo marcar el pedido como entregado.')
+  }
+}
+
+export async function reviewReturn(returnId: string, status: 'approved' | 'rejected') {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('No autenticado')
+
+  const fn = status === 'approved' ? 'approve_return' : 'reject_return'
+  const { error } = await supabase.rpc(fn, { p_return_id: returnId })
+
+  if (error) {
+    console.error(`${fn} failed:`, error.message)
+    throw new Error('No se pudo actualizar la solicitud de devolución.')
+  }
+}
