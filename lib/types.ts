@@ -9,6 +9,7 @@ export interface Package {
   code: PackageCode
   name: string
   price: number
+  shipping_cost: number
   bags: number
   commissions_json: Record<string, number>
   daily_spins: number
@@ -30,7 +31,7 @@ export interface Profile {
   created_at: string
 }
 
-export type OrderStatus = 'pending_payment' | 'paid' | 'rejected'
+export type OrderStatus = 'pending_payment' | 'paid' | 'rejected' | 'delivered' | 'returned'
 
 export interface ShippingAddress {
   calle: string
@@ -49,6 +50,7 @@ export interface Order {
   status: OrderStatus
   reviewed_by: string | null
   reviewed_at: string | null
+  delivered_at: string | null
   created_at: string
 }
 
@@ -80,6 +82,7 @@ export type WalletTransactionType =
   | 'withdrawal_request'
   | 'withdrawal_rejected'
   | 'roulette_prize'
+  | 'return_refund'
 
 export interface WalletTransaction {
   id: string
@@ -149,4 +152,25 @@ export interface RewardRedemption {
   reward_code: string
   points_spent: number
   created_at: string
+}
+
+export type ReturnRequestStatus = 'pending' | 'approved' | 'rejected'
+
+export interface ReturnRequest {
+  id: string
+  order_id: string
+  user_id: string
+  reason: string
+  status: ReturnRequestStatus
+  reviewed_by: string | null
+  reviewed_at: string | null
+  created_at: string
+}
+
+export interface AdminReturnRequest {
+  id: string
+  reason: string
+  created_at: string
+  orders: { id: string; packages: { name: string } | null } | null
+  profiles: { full_name: string; phone: string } | null
 }
