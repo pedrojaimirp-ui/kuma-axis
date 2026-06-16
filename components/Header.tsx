@@ -9,7 +9,7 @@ export function Header({ fullName }: { fullName: string }) {
       </div>
       <div className="text-right">
         <p className="text-xs text-blanco-cacao/70">{fullName}</p>
-        <p className="font-semibold text-acento-digital">0.00 puntos KCA</p>
+        <p className="font-semibold text-acento-digital">0.00 Puntos KÚMA</p>
         <SignOutButton />
       </div>
     </header>

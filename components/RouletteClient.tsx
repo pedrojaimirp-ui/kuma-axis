@@ -72,7 +72,7 @@ export function RouletteClient({
       if (audio) playWin(audio)
       confetti({ colors: BRAND_CONFETTI_COLORS, particleCount: 150, spread: 100, startVelocity: 45 })
       setResultMessage(
-        `¡Ganaste un premio de fidelización! +${result.prize_amount.toLocaleString('es-CO')} puntos de fidelización 🍫🎉`
+        `¡Ganaste +${result.prize_amount.toLocaleString('es-CO')} Puntos KÚMA! 🍫🎉`
       )
       setSpinsAvailable((n) => n - 1)
     } else {

@@ -15,7 +15,7 @@ export async function redeemReward(code: RewardCode) {
     console.error('redeem_loyalty_reward failed:', error.message)
     throw new Error(
       error.message.includes('No tienes suficientes puntos')
-        ? 'No tienes suficientes puntos de fidelización para este premio.'
+        ? 'No tienes suficientes Puntos KÚMA para este premio.'
         : 'No se pudo canjear el premio.'
     )
   }

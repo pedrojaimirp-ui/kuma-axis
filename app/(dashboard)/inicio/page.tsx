@@ -59,7 +59,7 @@ export default async function InicioPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <SummaryCard label="Puntos KCA" value="0.00" note="Disponible próximamente" accent="digital" />
+        <SummaryCard label="Puntos KÚMA" value="0.00" note="Disponible próximamente" accent="digital" />
         <SummaryCard label="Referidos activos" value="0" note="Disponible próximamente" accent="verde" />
         <SummaryCard label="Giros disponibles" value="0" note="Disponible próximamente" accent="mazorca" />
       </div>

@@ -43,7 +43,7 @@ export function WithdrawalForm({ available }: { available: number }) {
         disabled={available <= 0}
         className="w-full rounded-lg bg-[#39FF14] py-3 text-lg font-bold text-cacao-oscuro hover:opacity-90 disabled:opacity-50"
       >
-        Canjear puntos
+        Canjear Puntos KÚMA
       </button>
     )
   }
@@ -51,7 +51,7 @@ export function WithdrawalForm({ available }: { available: number }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3 rounded-lg bg-blanco-cacao p-3">
       <div>
-        <label className="block text-sm font-medium text-cacao-oscuro">Puntos a canjear</label>
+        <label className="block text-sm font-medium text-cacao-oscuro">Puntos KÚMA a canjear</label>
         <input
           required
           type="number"

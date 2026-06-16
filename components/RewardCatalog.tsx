@@ -26,8 +26,7 @@ export function RewardCatalog({ points }: { points: number }) {
   return (
     <div className="space-y-3">
       <p className="rounded-xl bg-white p-4 text-cacao-tostado shadow-sm">
-        Tienes <span className="font-bold text-verde-natural">{points.toLocaleString('es-CO')} puntos</span> de
-        fidelización.
+        Tienes <span className="font-bold text-verde-natural">{points.toLocaleString('es-CO')} Puntos KÚMA</span> disponibles.
       </p>
 
       {message && (
@@ -43,7 +42,7 @@ export function RewardCatalog({ points }: { points: number }) {
               <div>
                 <p className="font-semibold text-cacao-oscuro">{item.label}</p>
                 <p className="text-sm text-cacao-tostado">{item.description}</p>
-                <p className="text-sm text-cacao-tostado">{item.pointsCost.toLocaleString('es-CO')} puntos</p>
+                <p className="text-sm text-cacao-tostado">{item.pointsCost.toLocaleString('es-CO')} Puntos KÚMA</p>
               </div>
               <button
                 onClick={() => handleRedeem(item.code)}

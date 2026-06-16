@@ -106,14 +106,14 @@ export function PurchaseForm({
         {canPayWithBalance && (
           <div className="rounded-lg bg-verde-natural/10 p-3">
             <p className="text-sm text-cacao-tostado">
-              Tienes ${availableBalance.toLocaleString('es-CO')} puntos KCA disponibles.
+              Tienes ${availableBalance.toLocaleString('es-CO')} Puntos KÚMA disponibles.
             </p>
             <button
               onClick={handlePayWithBalance}
               disabled={loading}
               className="mt-2 w-full rounded-lg bg-verde-natural py-2 font-semibold text-blanco-cacao hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? 'Procesando...' : `Pagar con mis puntos KCA ($${finalPrice.toLocaleString('es-CO')})`}
+              {loading ? 'Procesando...' : `Pagar con mis Puntos KÚMA ($${finalPrice.toLocaleString('es-CO')})`}
             </button>
           </div>
         )}

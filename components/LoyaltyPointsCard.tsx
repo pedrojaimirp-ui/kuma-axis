@@ -5,7 +5,7 @@ import type { RewardVoucher } from '@/lib/types'
 export function LoyaltyPointsCard({ points, vouchers }: { points: number; vouchers: RewardVoucher[] }) {
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm">
-      <p className="text-sm text-cacao-tostado">Puntos de fidelización</p>
+      <p className="text-sm text-cacao-tostado">Puntos KÚMA</p>
       <p className="text-3xl font-bold text-verde-natural">{points.toLocaleString('es-CO')} pts</p>
 
       <Link
