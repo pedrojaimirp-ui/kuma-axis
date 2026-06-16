@@ -4,7 +4,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'KÚMA CACAO AXIS',
-  description: 'Comercio en red KÚMA ETERNA — chocolate 100% cacao puro',
+  description: 'KÚMA CACAO AXIS — chocolate 100% cacao puro colombiano',
   manifest: '/manifest.json',
 }
 
