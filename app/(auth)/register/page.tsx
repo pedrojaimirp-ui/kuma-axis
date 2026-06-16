@@ -152,7 +152,11 @@ function RegisterForm() {
               onChange={(e) => setAcceptedTerms(e.target.checked)}
               className="mt-1"
             />
-            Acepto los términos y condiciones de KÚMA CACAO AXIS.
+            Acepto los{' '}
+            <a href="/terminos" target="_blank" className="underline text-verde-natural">términos y condiciones</a>
+            {' '}y la{' '}
+            <a href="/politica-privacidad" target="_blank" className="underline text-verde-natural">política de privacidad</a>
+            {' '}de KÚMA CACAO AXIS.
           </label>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button
