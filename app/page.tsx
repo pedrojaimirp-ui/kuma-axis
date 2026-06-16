@@ -24,39 +24,65 @@ export default async function RootPage() {
   return (
     <main className="flex min-h-screen flex-col items-center bg-blanco-cacao px-4 py-10">
       <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-cacao-oscuro">KÚMA — Chocolate 100% cacao</h1>
-          <p className="mt-2 text-sm text-cacao-tostado">
-            Chocolate puro, sin aditivos, hecho con cacao real.
+
+        {/* Encabezado principal */}
+        <div className="text-center space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-kuma-dorado">KÚMA CACAO AXIS</p>
+          <h1 className="text-3xl font-extrabold text-cacao-oscuro leading-tight">
+            CON KÚMA GANA EN CADA PASO QUE DAS
+          </h1>
+        </div>
+
+        {/* Gancho del producto */}
+        <div className="rounded-xl bg-white p-4 shadow-sm space-y-2">
+          <p className="font-bold text-cacao-oscuro text-base">
+            ¿Cuándo fue la última vez que tomaste una taza de chocolate 100% cacao puro, sin endulzantes ni saborizantes genéricos?
+          </p>
+          <p className="text-sm text-cacao-tostado">
+            KÚMA te lo trae de vuelta. Sin azúcar, sin rellenos, sin cuento. El chocolate que te despierta y te hace decir <span className="font-semibold text-cacao-oscuro">"esto sí es chocolate de verdad"</span>.
           </p>
         </div>
 
-        <div className="space-y-4">
+        {/* Paquetes */}
+        <div className="space-y-3">
           {(packages as Package[] | null)?.map((pkg) => (
             <PublicPackageCard key={pkg.id} pkg={pkg} />
           ))}
         </div>
 
+        {/* Gancho de la red */}
+        <div className="rounded-xl bg-cacao-oscuro p-4 shadow-sm space-y-2">
+          <p className="text-sm text-blanco-cacao">
+            Y si nos gusta tanto... <span className="font-bold text-kuma-dorado">¿por qué no recomendarlo?</span> ¿Sabías que puedes ganarte una platica recomendando a otros esa taza de chocolate que te tomas todos los días?
+          </p>
+          <p className="text-sm text-blanco-cacao">
+            Además obtendrás descuentos y premios en <span className="font-bold text-kuma-dorado">Puntos KÚMA</span> canjeables por producto.
+          </p>
+        </div>
+
+        {/* Ruleta */}
+        <div className="rounded-xl bg-kuma-dorado p-4 shadow-sm text-center">
+          <p className="font-bold text-cacao-oscuro">
+            🎡 Con la Ruleta KÚMA todos los días ganamos — ¿y tú qué esperas para ser un ganador(a) más?
+          </p>
+        </div>
+
+        {/* Botones */}
         <div className="space-y-3">
           <Link
             href="/register"
-            className="block w-full rounded-lg bg-kuma-dorado py-2 text-center font-semibold text-cacao-oscuro hover:opacity-90"
+            className="block w-full rounded-lg bg-kuma-dorado py-3 text-center font-bold text-cacao-oscuro hover:opacity-90 text-base"
           >
-            Crear cuenta y comprar
+            Quiero mi primer KÚMA 🍫
           </Link>
           <Link
             href="/login"
-            className="block w-full rounded-lg border border-cacao-fresco/40 py-2 text-center font-semibold text-cacao-oscuro hover:bg-white"
+            className="block w-full rounded-lg border border-cacao-fresco/40 py-3 text-center font-semibold text-cacao-oscuro hover:bg-white"
           >
             Ya tengo cuenta
           </Link>
         </div>
 
-        <p className="text-center text-xs text-cacao-fresco">
-          Al crear tu cuenta podrás comprar chocolate KÚMA. Si más adelante quieres
-          recomendar KÚMA a otras personas, podrás compartir tu propio enlace desde
-          la sección &quot;Red&quot; de la app.
-        </p>
       </div>
     </main>
   )
