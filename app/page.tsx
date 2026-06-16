@@ -22,15 +22,17 @@ export default async function RootPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-blanco-cacao px-4 py-10">
+    <main className="flex min-h-screen flex-col items-center bg-[#e8f5e9] px-4 py-10">
       <div className="w-full max-w-md space-y-6">
 
         {/* Encabezado principal */}
-        <div className="text-center space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-widest text-kuma-dorado">KÚMA CACAO AXIS</p>
-          <h1 className="text-3xl font-extrabold text-cacao-oscuro leading-tight">
-            CON KÚMA GANA EN CADA PASO QUE DAS
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-extrabold text-cacao-oscuro leading-tight tracking-tight">
+            KÚMA CACAO AXIS
           </h1>
+          <p className="text-lg font-bold text-verde-natural">
+            Con KÚMA gana en cada paso que das
+          </p>
         </div>
 
         {/* Gancho del producto */}
