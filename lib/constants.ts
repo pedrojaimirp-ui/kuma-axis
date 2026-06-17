@@ -1,8 +1,14 @@
 export const WITHDRAWAL_FEE_PERCENT = 5
+export const RETENCION_FUENTE_PERCENT = 11
 
-export function calculateWithdrawalFee(amount: number): { fee: number; net: number } {
+export function calculateWithdrawalFee(amount: number): {
+  fee: number
+  retencion: number
+  net: number
+} {
   const fee = Math.round((amount * WITHDRAWAL_FEE_PERCENT) / 100)
-  return { fee, net: amount - fee }
+  const retencion = Math.round((amount * RETENCION_FUENTE_PERCENT) / 100)
+  return { fee, retencion, net: amount - fee - retencion }
 }
 
 export interface RoulettePrize {
