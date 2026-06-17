@@ -34,7 +34,7 @@ export default async function InicioPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('full_name')
+    .select('full_name, badge')
     .eq('id', user.id)
     .single()
 
@@ -46,6 +46,12 @@ export default async function InicioPage() {
 
   return (
     <div className="space-y-4">
+      {profile?.badge && (
+        <div className="flex items-center gap-2 rounded-xl bg-kuma-dorado px-4 py-2 shadow-sm">
+          <span className="text-2xl">🥇</span>
+          <p className="font-bold text-cacao-oscuro">{profile.badge}</p>
+        </div>
+      )}
       <div className="rounded-xl bg-verde-natural p-4 text-blanco-cacao shadow-sm">
         <h1 className="text-xl font-bold text-kuma-dorado">¡Hola, {firstName}! 👋🍫</h1>
         <p className="mt-2 text-sm text-blanco-cacao/90">
