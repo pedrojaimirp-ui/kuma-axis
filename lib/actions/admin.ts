@@ -2,10 +2,26 @@
 
 import { createClient } from '@/lib/supabase/server'
 
-export async function reviewOrder(orderId: string, status: 'paid' | 'rejected') {
+async function requireAdmin() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('No autenticado')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || !['admin', 'owner'].includes(profile.role)) {
+    throw new Error('No autorizado')
+  }
+
+  return { supabase, user }
+}
+
+export async function reviewOrder(orderId: string, status: 'paid' | 'rejected') {
+  const { supabase, user } = await requireAdmin()
 
   const { data, error } = await supabase
     .from('orders')
@@ -25,9 +41,7 @@ export async function reviewOrder(orderId: string, status: 'paid' | 'rejected') 
 }
 
 export async function reviewWithdrawal(id: string, status: 'paid' | 'rejected') {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('No autenticado')
+  const { supabase } = await requireAdmin()
 
   if (status === 'rejected') {
     const { error } = await supabase.rpc('reject_withdrawal', { p_id: id })
@@ -39,7 +53,6 @@ export async function reviewWithdrawal(id: string, status: 'paid' | 'rejected') 
   }
 
   const { error } = await supabase.rpc('approve_withdrawal', { p_id: id })
-
   if (error) {
     console.error('approve_withdrawal failed:', error.message)
     throw new Error('No se pudo actualizar el retiro.')
@@ -47,12 +60,9 @@ export async function reviewWithdrawal(id: string, status: 'paid' | 'rejected') 
 }
 
 export async function markOrderDelivered(orderId: string) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('No autenticado')
+  const { supabase } = await requireAdmin()
 
   const { error } = await supabase.rpc('mark_order_delivered', { p_order_id: orderId })
-
   if (error) {
     console.error('mark_order_delivered failed:', error.message)
     throw new Error('No se pudo marcar el pedido como entregado.')
@@ -60,13 +70,10 @@ export async function markOrderDelivered(orderId: string) {
 }
 
 export async function reviewReturn(returnId: string, status: 'approved' | 'rejected') {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('No autenticado')
+  const { supabase } = await requireAdmin()
 
   const fn = status === 'approved' ? 'approve_return' : 'reject_return'
   const { error } = await supabase.rpc(fn, { p_return_id: returnId })
-
   if (error) {
     console.error(`${fn} failed:`, error.message)
     throw new Error('No se pudo actualizar la solicitud de devolución.')
