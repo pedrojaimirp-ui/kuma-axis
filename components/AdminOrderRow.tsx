@@ -39,7 +39,25 @@ export function AdminOrderRow({ order }: { order: AdminOrder }) {
           Referencia de pago: <span className="font-semibold text-cacao-oscuro">{order.payment_reference}</span>
         </p>
       )}
-      <div className="mt-2 flex gap-2">
+      <div className="mt-2 flex flex-wrap gap-2">
+        {order.profiles?.phone && (
+          <>
+            <a
+              href={`tel:${order.profiles.phone}`}
+              className="rounded-lg bg-kuma-dorado px-3 py-1 text-sm font-semibold text-cacao-oscuro"
+            >
+              📞 Llamar
+            </a>
+            <a
+              href={`https://wa.me/57${order.profiles.phone}?text=Hola%20${encodeURIComponent(order.profiles.full_name ?? '')}%2C%20soy%20KÚMA%20CACAO%20AXIS.%20Te%20contactamos%20por%20tu%20pedido%20de%20${encodeURIComponent(order.packages?.name ?? '')}%20por%20valor%20de%20%24${order.packages ? Number(order.packages.price).toLocaleString('es-CO') : ''}%20%F0%9F%8D%AB`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-green-500 px-3 py-1 text-sm font-semibold text-white"
+            >
+              💬 WhatsApp
+            </a>
+          </>
+        )}
         <button
           onClick={() => handleReview('paid')}
           disabled={loading !== null}
