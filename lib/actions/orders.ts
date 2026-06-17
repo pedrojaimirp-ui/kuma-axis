@@ -83,6 +83,7 @@ export async function createOrder(input: {
 
     if (voucherError) {
       console.error('apply_voucher_to_order failed:', voucherError.message)
+      throw new Error('No se pudo aplicar el cupón. El pedido fue cancelado.')
     }
   }
 }
