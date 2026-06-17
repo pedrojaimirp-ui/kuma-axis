@@ -118,38 +118,17 @@ export function PurchaseForm({
           </div>
         )}
 
-        <p className="text-cacao-tostado">
-          O transfiere{' '}
-          <span className="font-bold text-kuma-dorado">${finalPrice.toLocaleString('es-CO')}</span> a
-          cualquiera de estos medios:
-        </p>
-
-        <div className="space-y-2">
-          <div className="rounded-lg bg-blanco-cacao p-3 text-center">
-            <p className="text-sm text-cacao-tostado">Escanea para pagar (Bre-B / Nequi / cualquier banco)</p>
-            <Image src="/payment-qr.png" alt="QR de pago" width={220} height={220} className="mx-auto mt-2" />
-          </div>
-          <div className="rounded-lg bg-blanco-cacao p-3">
-            <p className="text-sm text-cacao-tostado">Davivienda - Cuenta de ahorros</p>
-            <p className="text-lg font-bold text-verde-natural">{DAVIVIENDA_ACCOUNT}</p>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-cacao-oscuro">
-            Número de referencia / comprobante (opcional)
-          </label>
-          <input
-            value={paymentReference}
-            onChange={(e) => setPaymentReference(e.target.value)}
-            placeholder="Ej: 123456789"
-            className="mt-1 w-full rounded-lg border border-cacao-fresco/40 px-3 py-2 focus:border-kuma-dorado focus:outline-none"
-          />
+        <div className="rounded-xl bg-kuma-dorado/20 border border-kuma-dorado p-4 text-center space-y-1">
+          <p className="font-bold text-cacao-oscuro">⏳ Datos de pago en actualización</p>
+          <p className="text-sm text-cacao-tostado">
+            Estamos configurando la cuenta bancaria empresarial de KÚMA CACAO AXIS.
+            En breve estará disponible. Para completar tu pedido escríbenos a{' '}
+            <span className="font-semibold text-verde-natural">kumacacaoaxis@gmail.com</span>
+          </p>
         </div>
 
         <p className="text-sm text-cacao-tostado">
-          Cuando hayas hecho la transferencia, confirma tu pedido. Un administrador verificará
-          el pago.
+          Confirma tu pedido y nos comunicamos contigo para coordinar el pago.
         </p>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
