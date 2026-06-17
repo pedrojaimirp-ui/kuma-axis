@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 import { createOrder, purchaseWithBalance } from '@/lib/actions/orders'
 import type { Package, RewardVoucher, ShippingAddress } from '@/lib/types'
 
-const DAVIVIENDA_ACCOUNT = '4884 1069 8499'
 
 export function PurchaseForm({
   pkg,

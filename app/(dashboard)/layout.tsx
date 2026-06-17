@@ -18,11 +18,17 @@ export default async function DashboardLayout({ children }: { children: React.Re
     console.error('profiles select failed:', profileError.message)
   }
 
+  const { data: loyalty } = await supabase
+    .from('loyalty_points')
+    .select('points')
+    .eq('user_id', user.id)
+    .single()
+
   const isAdmin = !!profile && ['admin', 'owner'].includes(profile.role)
 
   return (
     <div className="min-h-screen bg-blanco-cacao pb-16">
-      <Header fullName={profile?.full_name ?? ''} />
+      <Header fullName={profile?.full_name ?? ''} loyaltyPoints={loyalty?.points ?? 0} />
       <main className="px-4 py-4">{children}</main>
       <BottomNav isAdmin={isAdmin} />
     </div>

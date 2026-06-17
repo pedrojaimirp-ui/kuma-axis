@@ -65,6 +65,20 @@ export default async function AdminPage() {
     console.error('withdrawal_requests select failed:', withdrawalsError.message)
   }
 
+  const { data: reservations, error: reservationsError } = await supabase
+    .from('reservations')
+    .select('packages(name)')
+
+  if (reservationsError) {
+    console.error('reservations select failed:', reservationsError.message)
+  }
+
+  const reservationCounts: Record<string, number> = {}
+  for (const r of (reservations ?? [])) {
+    const name = (r.packages as unknown as { name: string } | null)?.name ?? 'Desconocido'
+    reservationCounts[name] = (reservationCounts[name] ?? 0) + 1
+  }
+
   const { data: settings, error: settingsError } = await supabase
     .from('platform_settings')
     .select('withdrawal_fees_accumulated')
@@ -85,6 +99,25 @@ export default async function AdminPage() {
           📊 Reporte de comisiones (DIAN)
         </a>
       </div>
+      <div className="mb-6 rounded-xl bg-white p-4 shadow-sm">
+        <h2 className="mb-3 text-lg font-bold text-cacao-oscuro">📦 Pre-reservas de paquetes</h2>
+        {Object.keys(reservationCounts).length === 0 ? (
+          <p className="text-sm text-cacao-tostado">Aún no hay reservas.</p>
+        ) : (
+          <div className="space-y-2">
+            {Object.entries(reservationCounts).map(([name, count]) => (
+              <div key={name} className="flex items-center justify-between rounded-lg bg-blanco-cacao px-3 py-2">
+                <span className="text-sm text-cacao-oscuro">{name}</span>
+                <span className="font-bold text-kuma-dorado">{count} reserva{count !== 1 ? 's' : ''}</span>
+              </div>
+            ))}
+            <p className="pt-1 text-right text-sm font-semibold text-cacao-oscuro">
+              Total: {Object.values(reservationCounts).reduce((a, b) => a + b, 0)} personas
+            </p>
+          </div>
+        )}
+      </div>
+
       <h1 className="mb-4 text-xl font-bold text-cacao-oscuro">Pedidos pendientes</h1>
       <div className="space-y-3">
         {!orders?.length && <p className="text-cacao-tostado">No hay pedidos pendientes.</p>}

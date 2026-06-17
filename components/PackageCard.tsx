@@ -18,7 +18,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
       </p>
 
       <div className="mt-3 space-y-1 text-sm text-cacao-tostado">
-        <p className="font-semibold text-cacao-oscuro">Recompensas de fidelización por nivel:</p>
+        <p className="font-semibold text-cacao-oscuro">Puntos KÚMA por nivel:</p>
         {Object.entries(pkg.commissions_json).map(([level, value]) => (
           <p key={level}>
             {LEVEL_LABELS[level] ?? level}: ${Number(value).toLocaleString('es-CO')}

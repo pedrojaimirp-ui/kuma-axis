@@ -93,7 +93,7 @@ function RegisterForm() {
       return
     }
 
-    router.push('/inicio')
+    router.push('/reservar')
   }
 
   return (

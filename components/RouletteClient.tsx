@@ -121,7 +121,7 @@ export function RouletteClient({
       </div>
 
       <div className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="mb-2 text-lg font-bold text-cacao-oscuro">Tus últimos premios de fidelización</h2>
+        <h2 className="mb-2 text-lg font-bold text-cacao-oscuro">Tus últimos Puntos KÚMA ganados</h2>
         {!history.length && <p className="text-cacao-tostado">Todavía no has girado la ruleta.</p>}
         <div className="space-y-2">
           {history.map((h) => (
