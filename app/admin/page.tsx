@@ -77,6 +77,14 @@ export default async function AdminPage() {
 
   return (
     <div className="min-h-screen bg-blanco-cacao p-4">
+      <div className="mb-5 flex justify-end">
+        <a
+          href="/admin/comisiones"
+          className="rounded-lg bg-kuma-dorado px-4 py-2 text-sm font-bold text-cacao-oscuro hover:opacity-90"
+        >
+          📊 Reporte de comisiones (DIAN)
+        </a>
+      </div>
       <h1 className="mb-4 text-xl font-bold text-cacao-oscuro">Pedidos pendientes</h1>
       <div className="space-y-3">
         {!orders?.length && <p className="text-cacao-tostado">No hay pedidos pendientes.</p>}
