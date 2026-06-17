@@ -13,6 +13,11 @@ function validateShippingAddress(input: ShippingAddress): ShippingAddress {
     throw new Error('Completa todos los campos de la dirección.')
   }
 
+  if (calle.length < 5) throw new Error('La dirección es demasiado corta. Escribe tu dirección completa.')
+  if (ciudad.length < 3) throw new Error('Escribe el nombre completo de tu ciudad.')
+  if (departamento.length < 3) throw new Error('Escribe el nombre completo de tu departamento.')
+  if (!/^3\d{9}$/.test(telefono)) throw new Error('El teléfono debe ser un celular colombiano válido (10 dígitos, inicia en 3).')
+
   return { calle, ciudad, departamento, telefono }
 }
 
@@ -29,6 +34,17 @@ export async function createOrder(input: {
 
   const shippingAddress = validateShippingAddress(input.shippingAddress)
   const paymentReference = input.paymentReference?.trim() || null
+
+  const { data: existingOrder } = await supabase
+    .from('orders')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('status', 'pending_payment')
+    .maybeSingle()
+
+  if (existingOrder) {
+    throw new Error('Ya tienes un pedido pendiente de pago. Espera a que sea aprobado antes de hacer otro.')
+  }
 
   const { data: pkg, error: pkgError } = await supabase
     .from('packages')
