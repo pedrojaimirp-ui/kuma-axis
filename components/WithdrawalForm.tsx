@@ -67,7 +67,6 @@ export function WithdrawalForm({ available }: { available: number }) {
             <div className="mt-2 space-y-1 rounded-lg bg-blanco-cacao p-3 text-xs text-cacao-tostado">
               <p className="font-semibold text-cacao-oscuro">Liquidación del retiro:</p>
               <p>Valor solicitado: <span className="font-medium">${Number(amount).toLocaleString('es-CO')}</span></p>
-              <p>- Sostenimiento plataforma ({WITHDRAWAL_FEE_PERCENT}%): <span className="font-medium text-red-500">-${fee.toLocaleString('es-CO')}</span></p>
               <p>- Retención en la fuente DIAN ({RETENCION_FUENTE_PERCENT}%): <span className="font-medium text-red-500">-${retencion.toLocaleString('es-CO')}</span></p>
               <p className="border-t border-cacao-fresco/30 pt-1 font-bold text-verde-natural">
                 Recibirás: ${net.toLocaleString('es-CO')}
