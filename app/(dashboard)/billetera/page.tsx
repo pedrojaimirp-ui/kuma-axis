@@ -5,16 +5,16 @@ import { LoyaltyPointsCard } from '@/components/LoyaltyPointsCard'
 import type { RewardVoucher, Wallet, WalletTransaction } from '@/lib/types'
 
 const TYPE_LABELS: Record<string, string> = {
-  commission_l1: 'Recompensa de fidelización nivel 1',
-  commission_l2: 'Recompensa de fidelización nivel 2',
-  commission_l3: 'Recompensa de fidelización nivel 3',
-  commission_l4: 'Recompensa de fidelización nivel 4',
+  commission_l1: 'Comisión Puntos KÚMA nivel 1',
+  commission_l2: 'Comisión Puntos KÚMA nivel 2',
+  commission_l3: 'Comisión Puntos KÚMA nivel 3',
+  commission_l4: 'Comisión Puntos KÚMA nivel 4',
   owner_global: 'Bono de fundador',
   unlock: 'Puntos liberados',
   purchase_with_balance: 'Compra con puntos',
   withdrawal_request: 'Solicitud de redención',
   withdrawal_rejected: 'Redención rechazada (puntos devueltos)',
-  roulette_prize: 'Premio de fidelización (ruleta) — histórico',
+  roulette_prize: 'Premio Ruleta KÚMA — histórico',
 }
 
 export default async function BilleteraPage() {

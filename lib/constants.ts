@@ -54,7 +54,7 @@ export const REWARD_CATALOG: RewardCatalogItem[] = [
   {
     code: 'extra_spin',
     label: '🎰 1 giro extra de ruleta',
-    description: 'Suma un giro adicional a tu ruleta de fidelización.',
+    description: 'Suma un giro adicional a tu Ruleta KÚMA.',
     pointsCost: 50,
     kind: 'extra_spin',
   },
