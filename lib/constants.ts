@@ -39,48 +39,145 @@ export const ROULETTE_PRIZES: RoulettePrize[] = [
   { match: '$100.000', display: '💰 $100.000', amount: 100000 },
 ]
 
-export type RewardCode = 'extra_spin' | 'discount_5000' | 'discount_10000' | 'free_bag'
+export type RewardCode =
+  | 'extra_spin'
+  | 'extra_spin_3'
+  | 'discount_5000'
+  | 'discount_10000'
+  | 'discount_30000'
+  | 'free_bag'
+  | 'free_2bags'
+  | 'free_personal'
+  | 'kit_kuma'
+  | 'cata_chocolate'
 
 export interface RewardCatalogItem {
   code: RewardCode
   label: string
+  emoji: string
   description: string
   pointsCost: number
   kind: 'extra_spin' | 'voucher'
   voucherDiscount?: number
+  tier: 1 | 2 | 3 | 4
+  tierLabel: string
 }
 
 export const REWARD_CATALOG: RewardCatalogItem[] = [
+  // TIER 1 — FÁCIL (50–500 pts)
   {
     code: 'extra_spin',
-    label: '🎰 1 giro extra de ruleta',
-    description: 'Suma un giro adicional a tu Ruleta KÚMA.',
+    emoji: '🎰',
+    label: '1 giro extra de Ruleta KÚMA',
+    description: 'Gira una vez más y gana puntos adicionales. ¡La suerte te espera!',
     pointsCost: 50,
     kind: 'extra_spin',
+    tier: 1,
+    tierLabel: 'Fácil',
+  },
+  {
+    code: 'extra_spin_3',
+    emoji: '🎰🎰🎰',
+    label: '3 giros extra de Ruleta KÚMA',
+    description: 'Triple oportunidad de ganar. ¡Multiplica tus puntos!',
+    pointsCost: 120,
+    kind: 'extra_spin',
+    tier: 1,
+    tierLabel: 'Fácil',
   },
   {
     code: 'discount_5000',
-    label: '🎟️ $5.000 de descuento',
-    description: 'Cupón de $5.000 de descuento en tu próxima compra.',
+    emoji: '🎟️',
+    label: '$5.000 de descuento en tu compra',
+    description: 'Cupón aplicable a cualquier paquete KÚMA. ¡Chocolate más barato!',
     pointsCost: 500,
     kind: 'voucher',
     voucherDiscount: 5000,
+    tier: 1,
+    tierLabel: 'Fácil',
   },
+
+  // TIER 2 — MEDIO (1.000–3.000 pts)
   {
     code: 'discount_10000',
-    label: '🎟️ $10.000 de descuento',
-    description: 'Cupón de $10.000 de descuento en tu próxima compra.',
+    emoji: '🎟️',
+    label: '$10.000 de descuento en tu compra',
+    description: 'Ahorra $10.000 en tu próximo pedido de chocolate KÚMA.',
     pointsCost: 1000,
     kind: 'voucher',
     voucherDiscount: 10000,
+    tier: 2,
+    tierLabel: 'Medio',
   },
   {
     code: 'free_bag',
-    label: '🍫 1 bolsa de chocolate gratis (250g)',
-    description: 'Cupón equivalente al valor de una bolsa, aplicado como descuento en tu próxima compra.',
-    pointsCost: 1800,
+    emoji: '🍫',
+    label: '1 bolsa de chocolate KÚMA (250g)',
+    description: 'Una bolsa de chocolate 100% cacao puro sin azúcar, directo a tu puerta.',
+    pointsCost: 1500,
     kind: 'voucher',
     voucherDiscount: 15000,
+    tier: 2,
+    tierLabel: 'Medio',
+  },
+  {
+    code: 'discount_30000',
+    emoji: '💰',
+    label: '$30.000 de descuento en tu compra',
+    description: 'Descuento poderoso. Casi un tercio del Paquete Personal gratis.',
+    pointsCost: 2500,
+    kind: 'voucher',
+    voucherDiscount: 30000,
+    tier: 2,
+    tierLabel: 'Medio',
+  },
+
+  // TIER 3 — PREMIUM (3.000–8.000 pts)
+  {
+    code: 'free_2bags',
+    emoji: '🍫🍫',
+    label: '2 bolsas de chocolate KÚMA (500g)',
+    description: '¡Doble porción de cacao puro! Comparte con quien más quieres.',
+    pointsCost: 3000,
+    kind: 'voucher',
+    voucherDiscount: 30000,
+    tier: 3,
+    tierLabel: 'Premium',
+  },
+  {
+    code: 'kit_kuma',
+    emoji: '🎁',
+    label: 'Kit KÚMA — Gorra + Camiseta + 1 bolsa',
+    description: 'El kit completo de la familia KÚMA. Lúcete y disfruta el mejor chocolate.',
+    pointsCost: 6000,
+    kind: 'voucher',
+    voucherDiscount: 60000,
+    tier: 3,
+    tierLabel: 'Premium',
+  },
+
+  // TIER 4 — EXCLUSIVO (8.000+ pts)
+  {
+    code: 'free_personal',
+    emoji: '🏆',
+    label: 'Paquete Personal KÚMA completo GRATIS',
+    description: '5 bolsas de chocolate 100% cacao puro sin costo. El premio más codiciado.',
+    pointsCost: 8000,
+    kind: 'voucher',
+    voucherDiscount: 90000,
+    tier: 4,
+    tierLabel: 'Exclusivo',
+  },
+  {
+    code: 'cata_chocolate',
+    emoji: '✨',
+    label: 'Experiencia Cata de Chocolate KÚMA',
+    description: 'Una sesión privada de cata de chocolates con el equipo KÚMA. Única e irrepetible.',
+    pointsCost: 12000,
+    kind: 'voucher',
+    voucherDiscount: 120000,
+    tier: 4,
+    tierLabel: 'Exclusivo',
   },
 ]
 
