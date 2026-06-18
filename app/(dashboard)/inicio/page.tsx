@@ -1,28 +1,29 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
-const ACCENT_BORDER: Record<string, string> = {
-  digital: 'border-acento-digital',
-  verde: 'border-verde-natural',
-  mazorca: 'border-cacao-mazorca',
-}
-
 function SummaryCard({
   label,
   value,
   note,
-  accent,
+  icon,
+  bg,
+  text,
 }: {
   label: string
   value: string
   note: string
-  accent: keyof typeof ACCENT_BORDER
+  icon: string
+  bg: string
+  text: string
 }) {
   return (
-    <div className={`rounded-xl border-l-4 bg-white p-4 shadow-sm ${ACCENT_BORDER[accent]}`}>
-      <p className="text-sm text-cacao-tostado">{label}</p>
-      <p className="text-2xl font-bold text-cacao-oscuro">{value}</p>
-      <p className="text-xs text-cacao-fresco">{note}</p>
+    <div className={`rounded-2xl p-4 shadow-md ${bg}`}>
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-2xl">{icon}</span>
+        <p className={`text-sm font-semibold ${text}/80`}>{label}</p>
+      </div>
+      <p className={`text-3xl font-extrabold ${text}`}>{value}</p>
+      <p className={`text-xs mt-1 ${text}/60`}>{note}</p>
     </div>
   )
 }
@@ -47,27 +48,72 @@ export default async function InicioPage() {
   return (
     <div className="space-y-4">
       {profile?.badge && (
-        <div className="flex items-center gap-2 rounded-xl bg-kuma-dorado px-4 py-2 shadow-sm">
-          <span className="text-2xl">🥇</span>
-          <p className="font-bold text-cacao-oscuro">{profile.badge}</p>
+        <div className="flex items-center gap-3 rounded-2xl bg-kuma-dorado px-4 py-3 shadow-md">
+          <span className="text-3xl">🥇</span>
+          <p className="font-extrabold text-cacao-oscuro text-base">{profile.badge}</p>
         </div>
       )}
-      <div className="rounded-xl bg-verde-natural p-4 text-blanco-cacao shadow-sm">
-        <h1 className="text-xl font-bold text-kuma-dorado">¡Hola, {firstName}! 👋🍫</h1>
-        <p className="mt-2 text-sm text-blanco-cacao/90">
-          Qué alegría tenerte en la familia KÚMA. Eres parte de una red que celebra el cacao
-          100% puro de nuestra tierra — un producto hecho con dedicación, pensado para
-          consentirte a ti y a quienes invites.
+
+      {/* Banner principal */}
+      <div className="rounded-2xl bg-cacao-oscuro p-5 shadow-lg relative overflow-hidden">
+        <div className="absolute top-0 right-0 text-8xl opacity-10 select-none">🍫</div>
+        <p className="text-kuma-dorado text-xs font-bold uppercase tracking-widest mb-1">KÚMA CACAO AXIS</p>
+        <h1 className="text-2xl font-extrabold text-blanco-cacao">¡Hola, {firstName}! 👋</h1>
+        <p className="mt-2 text-sm text-blanco-cacao/80 leading-relaxed">
+          Bienvenido a la red de chocolate 100% cacao puro de Colombia.
+          Gira la ruleta, crece tu red y gana comisiones reales. ✨
         </p>
-        <p className="mt-2 text-sm text-blanco-cacao/90">
-          Gracias por confiar en KÚMA CACAO AXIS. Disfruta el chocolate, gira la ruleta y mira
-          crecer tu red. ¡Esto recién comienza! ✨
-        </p>
+        <div className="mt-3 inline-block rounded-full bg-kuma-dorado px-3 py-1 text-xs font-bold text-cacao-oscuro">
+          🍫 Chocolate sin azúcar · Sin conservantes
+        </div>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <SummaryCard label="Puntos KÚMA" value="0.00" note="Disponible próximamente" accent="digital" />
-        <SummaryCard label="Referidos activos" value="0" note="Disponible próximamente" accent="verde" />
-        <SummaryCard label="Giros disponibles" value="0" note="Disponible próximamente" accent="mazorca" />
+
+      {/* Tarjetas de resumen */}
+      <div className="grid grid-cols-3 gap-3">
+        <SummaryCard
+          label="Puntos KÚMA"
+          value="—"
+          note="Pronto"
+          icon="💰"
+          bg="bg-kuma-dorado"
+          text="text-cacao-oscuro"
+        />
+        <SummaryCard
+          label="Referidos"
+          value="—"
+          note="Pronto"
+          icon="🌳"
+          bg="bg-verde-natural"
+          text="text-blanco-cacao"
+        />
+        <SummaryCard
+          label="Giros"
+          value="—"
+          note="Pronto"
+          icon="🎰"
+          bg="bg-cacao-oscuro"
+          text="text-kuma-dorado"
+        />
+      </div>
+
+      {/* Links rápidos */}
+      <div className="grid grid-cols-2 gap-3">
+        <a href="/tienda" className="rounded-2xl bg-verde-natural p-4 text-center shadow-md hover:opacity-90">
+          <p className="text-2xl">🛒</p>
+          <p className="mt-1 font-bold text-blanco-cacao text-sm">Comprar</p>
+        </a>
+        <a href="/red" className="rounded-2xl bg-kuma-dorado p-4 text-center shadow-md hover:opacity-90">
+          <p className="text-2xl">🌳</p>
+          <p className="mt-1 font-bold text-cacao-oscuro text-sm">Mi Red</p>
+        </a>
+        <a href="/ruleta" className="rounded-2xl bg-cacao-oscuro p-4 text-center shadow-md hover:opacity-90">
+          <p className="text-2xl">🎰</p>
+          <p className="mt-1 font-bold text-kuma-dorado text-sm">Ruleta</p>
+        </a>
+        <a href="/billetera" className="rounded-2xl bg-acento-digital/20 border-2 border-acento-digital p-4 text-center shadow-md hover:opacity-90">
+          <p className="text-2xl">💳</p>
+          <p className="mt-1 font-bold text-cacao-oscuro text-sm">Billetera</p>
+        </a>
       </div>
     </div>
   )
