@@ -89,6 +89,42 @@ export default async function AdminPage() {
     console.error('platform_settings select failed:', settingsError.message)
   }
 
+  // ── Fondo Ruleta: puntos emitidos por día (últimos 7 días) ──────────────
+  const { data: spinsByDay } = await supabase
+    .from('spin_history')
+    .select('prize_amount, created_at')
+    .gte('created_at', new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString())
+    .order('created_at', { ascending: false })
+
+  // Agrupar por fecha
+  const spinDayMap: Record<string, number> = {}
+  for (const s of (spinsByDay ?? [])) {
+    const day = new Date(s.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })
+    spinDayMap[day] = (spinDayMap[day] ?? 0) + Number(s.prize_amount)
+  }
+  const totalPuntosEmitidos7d = Object.values(spinDayMap).reduce((a, b) => a + b, 0)
+
+  // ── Cupones pendientes y usados ─────────────────────────────────────────
+  const { data: vouchersAvailable } = await supabase
+    .from('reward_vouchers')
+    .select('discount_amount')
+    .eq('status', 'available')
+
+  const { data: vouchersUsed } = await supabase
+    .from('reward_vouchers')
+    .select('discount_amount')
+    .eq('status', 'used')
+
+  const fondoPendiente = (vouchersAvailable ?? []).reduce((a, v) => a + Number(v.discount_amount), 0)
+  const fondoEntregado = (vouchersUsed ?? []).reduce((a, v) => a + Number(v.discount_amount), 0)
+
+  // ── Puntos totales en circulación ───────────────────────────────────────
+  const { data: walletPts } = await supabase
+    .from('wallets')
+    .select('loyalty_points_balance')
+
+  const puntosEnCirculacion = (walletPts ?? []).reduce((a, w) => a + Number(w.loyalty_points_balance), 0)
+
   return (
     <div className="min-h-screen bg-blanco-cacao p-4">
       <div className="mb-5 flex justify-end">
@@ -116,6 +152,80 @@ export default async function AdminPage() {
             </p>
           </div>
         )}
+      </div>
+
+      {/* ── FONDO RULETA KÚMA ── */}
+      <div className="mb-6 rounded-2xl overflow-hidden shadow-md">
+        <div className="bg-gradient-to-r from-cacao-oscuro to-[#2a1a0e] px-4 py-3 flex items-center gap-2">
+          <span className="text-xl">🎰</span>
+          <h2 className="text-base font-extrabold text-kuma-dorado">Fondo Ruleta KÚMA</h2>
+          <span className="ml-auto text-xs text-blanco-cacao/40">últimos 7 días</span>
+        </div>
+        <div className="bg-white p-4 space-y-4">
+
+          {/* Resumen en 3 tarjetas */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-xl bg-verde-natural/10 border border-verde-natural/20 p-3 text-center">
+              <p className="text-[10px] font-bold text-verde-natural uppercase tracking-wide">Premios pendientes</p>
+              <p className="text-lg font-extrabold text-verde-natural">
+                ${fondoPendiente.toLocaleString('es-CO')}
+              </p>
+              <p className="text-[9px] text-cacao-tostado/60">{vouchersAvailable?.length ?? 0} cupones sin usar</p>
+            </div>
+            <div className="rounded-xl bg-kuma-dorado/10 border border-kuma-dorado/20 p-3 text-center">
+              <p className="text-[10px] font-bold text-cacao-tostado uppercase tracking-wide">Pts en circulación</p>
+              <p className="text-lg font-extrabold text-cacao-oscuro">
+                {puntosEnCirculacion.toLocaleString('es-CO')}
+              </p>
+              <p className="text-[9px] text-cacao-tostado/60">puntos activos</p>
+            </div>
+            <div className="rounded-xl bg-blanco-cacao border border-cacao-fresco/20 p-3 text-center">
+              <p className="text-[10px] font-bold text-cacao-tostado uppercase tracking-wide">Ya entregado</p>
+              <p className="text-lg font-extrabold text-cacao-oscuro">
+                ${fondoEntregado.toLocaleString('es-CO')}
+              </p>
+              <p className="text-[9px] text-cacao-tostado/60">{vouchersUsed?.length ?? 0} cupones usados</p>
+            </div>
+          </div>
+
+          {/* Puntos emitidos por día */}
+          <div>
+            <p className="text-xs font-extrabold text-cacao-oscuro uppercase tracking-wide mb-2">
+              🎰 Puntos emitidos por día
+            </p>
+            {Object.keys(spinDayMap).length === 0 ? (
+              <p className="text-xs text-cacao-tostado/60">Sin giros en los últimos 7 días.</p>
+            ) : (
+              <div className="space-y-1.5">
+                {Object.entries(spinDayMap)
+                  .sort((a, b) => b[0].localeCompare(a[0]))
+                  .map(([day, pts]) => {
+                    const pct = totalPuntosEmitidos7d > 0 ? Math.round((pts / totalPuntosEmitidos7d) * 100) : 0
+                    return (
+                      <div key={day} className="flex items-center gap-2">
+                        <span className="w-14 text-xs text-cacao-tostado shrink-0">{day}</span>
+                        <div className="flex-1 h-5 rounded-full bg-blanco-cacao overflow-hidden">
+                          <div
+                            className="h-5 rounded-full bg-kuma-dorado flex items-center pl-2 transition-all"
+                            style={{ width: `${Math.max(pct, 4)}%` }}
+                          >
+                            <span className="text-[9px] font-bold text-cacao-oscuro whitespace-nowrap">
+                              {pts.toLocaleString('es-CO')} pts
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-cacao-tostado/60 w-8 text-right">{pct}%</span>
+                      </div>
+                    )
+                  })}
+                <p className="pt-1 text-right text-xs font-bold text-cacao-oscuro">
+                  Total 7 días: {totalPuntosEmitidos7d.toLocaleString('es-CO')} pts
+                </p>
+              </div>
+            )}
+          </div>
+
+        </div>
       </div>
 
       <h1 className="mb-4 text-xl font-bold text-cacao-oscuro">Pedidos pendientes</h1>
