@@ -3,6 +3,13 @@
 import { createClient } from '@/lib/supabase/server'
 import type { PackageCode, ShippingAddress } from '@/lib/types'
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function validateUuid(value: string, label: string): string {
+  if (!UUID_RE.test(value)) throw new Error(`${label} inválido.`)
+  return value
+}
+
 function validateShippingAddress(input: ShippingAddress): ShippingAddress {
   const calle = input.calle?.trim()
   const ciudad = input.ciudad?.trim()
@@ -14,8 +21,11 @@ function validateShippingAddress(input: ShippingAddress): ShippingAddress {
   }
 
   if (calle.length < 5) throw new Error('La dirección es demasiado corta. Escribe tu dirección completa.')
+  if (calle.length > 200) throw new Error('La dirección es demasiado larga.')
   if (ciudad.length < 3) throw new Error('Escribe el nombre completo de tu ciudad.')
+  if (ciudad.length > 100) throw new Error('El nombre de la ciudad es demasiado largo.')
   if (departamento.length < 3) throw new Error('Escribe el nombre completo de tu departamento.')
+  if (departamento.length > 100) throw new Error('El nombre del departamento es demasiado largo.')
   if (!/^3\d{9}$/.test(telefono)) throw new Error('El teléfono debe ser un celular colombiano válido (10 dígitos, inicia en 3).')
 
   return { calle, ciudad, departamento, telefono }
@@ -33,7 +43,7 @@ export async function createOrder(input: {
   if (!user) throw new Error('No autenticado')
 
   const shippingAddress = validateShippingAddress(input.shippingAddress)
-  const paymentReference = input.paymentReference?.trim() || null
+  const paymentReference = input.paymentReference?.trim().slice(0, 100) || null
 
   const { data: existingOrder } = await supabase
     .from('orders')
@@ -120,10 +130,11 @@ export async function requestReturn(orderId: string, reason: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('No autenticado')
 
+  validateUuid(orderId, 'Pedido')
+
   const trimmedReason = reason.trim()
-  if (!trimmedReason) {
-    throw new Error('Debes indicar un motivo para la devolución.')
-  }
+  if (!trimmedReason) throw new Error('Debes indicar un motivo para la devolución.')
+  if (trimmedReason.length > 500) throw new Error('El motivo no puede superar los 500 caracteres.')
 
   const { error } = await supabase.rpc('request_return', {
     p_order_id: orderId,
@@ -132,6 +143,10 @@ export async function requestReturn(orderId: string, reason: string) {
 
   if (error) {
     console.error('request_return failed:', error.message)
-    throw new Error(error.message)
+    // Mensajes controlados — nunca exponer errores internos de SQL al usuario
+    if (error.message.includes('5 días hábiles')) throw new Error('Ya pasaron los 5 días hábiles para solicitar devolución.')
+    if (error.message.includes('ya existe')) throw new Error('Ya tienes una solicitud de devolución para este pedido.')
+    if (error.message.includes('entregados')) throw new Error('Solo puedes solicitar devolución de pedidos entregados.')
+    throw new Error('No se pudo registrar la solicitud. Intenta de nuevo.')
   }
 }

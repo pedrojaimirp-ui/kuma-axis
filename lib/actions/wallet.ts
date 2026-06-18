@@ -9,12 +9,10 @@ export async function requestWithdrawal(input: { amount: number; destination: st
   if (!user) throw new Error('No autenticado')
 
   const destination = input.destination?.trim()
-  if (!destination) {
-    throw new Error('Indica a qué cuenta quieres que te transfiramos.')
-  }
-  if (!Number.isFinite(input.amount) || input.amount <= 0) {
-    throw new Error('Ingresa un monto válido.')
-  }
+  if (!destination) throw new Error('Indica a qué cuenta quieres que te transfiramos.')
+  if (destination.length > 200) throw new Error('Los datos de la cuenta son demasiado largos.')
+  if (!Number.isFinite(input.amount) || input.amount <= 0) throw new Error('Ingresa un monto válido.')
+  if (input.amount > 10_000_000) throw new Error('El monto supera el límite permitido por transacción.')
 
   const { error } = await supabase.rpc('request_withdrawal', {
     p_amount: input.amount,
