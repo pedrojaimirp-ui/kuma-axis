@@ -81,7 +81,7 @@ export default async function AdminPage() {
 
   const { data: settings, error: settingsError } = await supabase
     .from('platform_settings')
-    .select('withdrawal_fees_accumulated')
+    .select('withdrawal_fees_accumulated, roulette_fund_accumulated, roulette_fund_percent')
     .eq('id', 1)
     .single()
 
@@ -162,6 +162,22 @@ export default async function AdminPage() {
           <span className="ml-auto text-xs text-blanco-cacao/40">últimos 7 días</span>
         </div>
         <div className="bg-white p-4 space-y-4">
+
+          {/* Fondo acumulado desde ventas */}
+          <div className="rounded-xl bg-gradient-to-r from-kuma-dorado/20 to-kuma-dorado/5 border border-kuma-dorado/40 p-4 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-extrabold text-cacao-tostado uppercase tracking-widest">
+                💰 Fondo acumulado desde ventas
+              </p>
+              <p className="text-2xl font-extrabold text-cacao-oscuro mt-0.5">
+                ${Number(settings?.roulette_fund_accumulated ?? 0).toLocaleString('es-CO')}
+              </p>
+              <p className="text-[10px] text-cacao-tostado/60 mt-0.5">
+                {Number(settings?.roulette_fund_percent ?? 6.11)}% de cada venta se destina automáticamente
+              </p>
+            </div>
+            <span className="text-4xl opacity-20">🎰</span>
+          </div>
 
           {/* Resumen en 3 tarjetas */}
           <div className="grid grid-cols-3 gap-2">
