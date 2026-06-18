@@ -236,9 +236,22 @@ export default async function AdminPage() {
         ))}
       </div>
 
-      <h1 className="mb-4 mt-6 text-xl font-bold text-cacao-oscuro">Pedidos pagados por entregar</h1>
+      {/* Sección bodega */}
+      <div className="mt-6 mb-3 rounded-xl bg-cacao-oscuro px-4 py-3 flex items-center gap-2">
+        <span className="text-xl">📦</span>
+        <div>
+          <h1 className="text-base font-extrabold text-kuma-dorado">Bodega — Listos para despachar</h1>
+          <p className="text-xs text-blanco-cacao/50">
+            {paidOrders?.length ?? 0} pedido{(paidOrders?.length ?? 0) !== 1 ? 's' : ''} pendiente{(paidOrders?.length ?? 0) !== 1 ? 's' : ''} de entrega
+          </p>
+        </div>
+      </div>
       <div className="space-y-3">
-        {!paidOrders?.length && <p className="text-cacao-tostado">No hay pedidos pagados pendientes de entrega.</p>}
+        {!paidOrders?.length && (
+          <p className="rounded-xl bg-white p-4 text-sm text-cacao-tostado text-center">
+            🎉 Todo despachado — no hay pedidos pendientes.
+          </p>
+        )}
         {(paidOrders as unknown as AdminOrder[] | null)?.map((order) => (
           <AdminPaidOrderRow key={order.id} order={order} />
         ))}
