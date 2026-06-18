@@ -29,26 +29,30 @@ export function ReferralLinkCard({ referralLink }: { referralLink: string }) {
   }
 
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
-      <h2 className="text-lg font-bold text-cacao-oscuro">Tu enlace para invitar 🍫</h2>
-      <p className="mt-1 text-sm text-cacao-tostado">
-        Comparte este enlace para que tus invitados se registren en tu red.
-      </p>
-      <p className="mt-3 break-all rounded-lg bg-blanco-cacao p-3 text-sm text-cacao-oscuro">
-        {referralLink}
-      </p>
-      <button
-        onClick={handleCopy}
-        className="mt-3 w-full rounded-lg bg-kuma-dorado py-3 font-bold text-cacao-oscuro hover:opacity-90"
-      >
-        {copied ? '¡Copiado! ✅' : 'Copiar enlace'}
-      </button>
-      <button
-        onClick={handleWhatsApp}
-        className="mt-2 w-full rounded-lg bg-[#25D366] py-3 font-bold text-white hover:opacity-90"
-      >
-        📲 Compartir por WhatsApp
-      </button>
+    <div className="rounded-2xl overflow-hidden shadow-md">
+      <div className="bg-cacao-oscuro px-4 py-3">
+        <h2 className="text-base font-extrabold text-kuma-dorado">🍫 Tu enlace para invitar</h2>
+        <p className="text-xs text-blanco-cacao/60 mt-1">
+          Comparte y gana comisiones por cada persona que se una.
+        </p>
+      </div>
+      <div className="bg-white p-4 space-y-3">
+        <p className="break-all rounded-xl bg-blanco-cacao p-3 text-sm text-cacao-oscuro border border-cacao-fresco/20">
+          {referralLink}
+        </p>
+        <button
+          onClick={handleCopy}
+          className="w-full rounded-xl bg-kuma-dorado py-3 font-extrabold text-cacao-oscuro hover:opacity-90"
+        >
+          {copied ? '¡Copiado! ✅' : '📋 Copiar enlace'}
+        </button>
+        <button
+          onClick={handleWhatsApp}
+          className="w-full rounded-xl bg-[#25D366] py-3 font-extrabold text-white hover:opacity-90"
+        >
+          📲 Compartir por WhatsApp
+        </button>
+      </div>
     </div>
   )
 }

@@ -4,15 +4,18 @@ import type { RewardVoucher } from '@/lib/types'
 
 export function LoyaltyPointsCard({ points, vouchers }: { points: number; vouchers: RewardVoucher[] }) {
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm">
-      <p className="text-sm text-cacao-tostado">Puntos KÚMA</p>
-      <p className="text-3xl font-bold text-verde-natural">{points.toLocaleString('es-CO')} pts</p>
-
+    <div className="rounded-2xl overflow-hidden shadow-md">
+      <div className="bg-verde-natural px-4 py-4">
+        <p className="text-xs font-bold text-blanco-cacao/70 uppercase tracking-wide">Puntos KÚMA</p>
+        <p className="text-4xl font-extrabold text-kuma-dorado">{points.toLocaleString('es-CO')}</p>
+        <p className="text-xs text-blanco-cacao/60">puntos disponibles</p>
+      </div>
+      <div className="bg-white p-4">
       <Link
         href="/billetera/canjear"
-        className="mt-3 block w-full rounded-lg bg-verde-natural py-2 text-center font-semibold text-blanco-cacao hover:opacity-90"
+        className="block w-full rounded-xl bg-kuma-dorado py-3 text-center font-extrabold text-cacao-oscuro hover:opacity-90"
       >
-        Ver catálogo de premios
+        🎁 Ver catálogo de premios
       </Link>
 
       {vouchers.length > 0 && (
@@ -29,6 +32,7 @@ export function LoyaltyPointsCard({ points, vouchers }: { points: number; vouche
           </ul>
         </div>
       )}
+      </div>
     </div>
   )
 }
