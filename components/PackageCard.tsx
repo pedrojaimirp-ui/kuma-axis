@@ -10,44 +10,44 @@ const LEVEL_LABELS: Record<string, string> = {
 
 export function PackageCard({ pkg }: { pkg: Package }) {
   return (
-    <div className="flex flex-col rounded-2xl overflow-hidden shadow-md border border-cacao-fresco/10">
-      {/* Encabezado */}
-      <div className="bg-cacao-oscuro px-4 pt-4 pb-3">
-        <h3 className="text-lg font-extrabold text-kuma-dorado">🍫 {pkg.name}</h3>
-        <p className="text-3xl font-extrabold text-blanco-cacao">${Number(pkg.price).toLocaleString('es-CO')}</p>
-        <p className="text-xs text-blanco-cacao/60 mt-1">
-          {pkg.bags} bolsas de 250 g · 100% cacao puro
+    <div className="flex flex-col rounded-xl bg-white p-4 shadow-sm">
+      <h3 className="text-lg font-bold text-cacao-oscuro">{pkg.name}</h3>
+      <p className="text-2xl font-bold text-kuma-dorado">${Number(pkg.price).toLocaleString('es-CO')}</p>
+      <p className="text-sm text-cacao-tostado">
+        {pkg.bags} bolsas de 250 g · Chocolate 100% cacao sin azúcar ni conservantes
+      </p>
+
+      <div className="mt-3 space-y-1 text-sm text-cacao-tostado">
+        <p className="font-semibold text-cacao-oscuro">Puntos KÚMA por nivel:</p>
+        {Object.entries(pkg.commissions_json).map(([level, value]) => (
+          <p key={level}>
+            {LEVEL_LABELS[level] ?? level}: ${Number(value).toLocaleString('es-CO')}
+          </p>
+        ))}
+      </div>
+
+      <p className="mt-3 text-sm text-verde-natural">
+        🎰 {pkg.daily_spins} giro(s) diario(s) + {pkg.referral_spins} por referido
+      </p>
+
+      {pkg.activation_requirement?.min_direct_referrals && (
+        <p className="mt-1 text-xs text-cacao-fresco">
+          Requiere {pkg.activation_requirement.min_direct_referrals} invitados directos para activarse.
         </p>
-      </div>
+      )}
 
-      {/* Cuerpo */}
-      <div className="bg-white flex flex-col flex-1 p-4 space-y-3">
-        <div className="rounded-xl bg-blanco-cacao p-3 space-y-1">
-          <p className="text-xs font-bold text-cacao-oscuro uppercase tracking-wide">Puntos KÚMA por nivel:</p>
-          {Object.entries(pkg.commissions_json).map(([level, value]) => (
-            <div key={level} className="flex justify-between text-sm">
-              <span className="text-cacao-tostado">{LEVEL_LABELS[level] ?? level}</span>
-              <span className="font-bold text-verde-natural">${Number(value).toLocaleString('es-CO')}</span>
-            </div>
-          ))}
-        </div>
+      {pkg.max_direct_referrals && (
+        <p className="mt-1 text-xs text-cacao-fresco">
+          Puedes invitar hasta {pkg.max_direct_referrals} personas directas con este paquete.
+        </p>
+      )}
 
-        <div className="flex gap-2 text-sm">
-          <span className="rounded-full bg-kuma-dorado/20 px-3 py-1 text-cacao-oscuro font-semibold">
-            🎰 {pkg.daily_spins} giro{pkg.daily_spins !== 1 ? 's' : ''}/día
-          </span>
-          <span className="rounded-full bg-verde-natural/20 px-3 py-1 text-cacao-oscuro font-semibold">
-            👥 {pkg.max_direct_referrals} invitados
-          </span>
-        </div>
-
-        <Link
-          href={`/tienda/comprar/${pkg.code}`}
-          className="mt-auto rounded-xl bg-kuma-dorado py-3 text-center font-extrabold text-cacao-oscuro hover:opacity-90 shadow-sm"
-        >
-          Comprar ahora →
-        </Link>
-      </div>
+      <Link
+        href={`/tienda/comprar/${pkg.code}`}
+        className="mt-4 rounded-lg bg-kuma-dorado py-2 text-center font-semibold text-cacao-oscuro hover:opacity-90"
+      >
+        Comprar
+      </Link>
     </div>
   )
 }
