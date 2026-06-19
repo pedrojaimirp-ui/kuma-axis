@@ -49,7 +49,7 @@ export function ReservaForm({ packages }: { packages: Package[] }) {
             <div>
               <p className="font-bold text-cacao-oscuro">{pkg.name}</p>
               <p className="text-sm text-cacao-tostado">
-                {pkg.bags} bolsas de 250 g · ${Number(pkg.price).toLocaleString('es-CO')}
+                {pkg.bags} bolsas de 250 g de chocolate 100% cacao · ${Number(pkg.price).toLocaleString('es-CO')}
               </p>
               <p className="text-xs text-verde-natural mt-1">
                 Hasta {pkg.max_direct_referrals} invitados directos

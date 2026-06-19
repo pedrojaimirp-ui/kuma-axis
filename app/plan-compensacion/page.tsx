@@ -46,7 +46,7 @@ export default async function PlanCompensacionPage() {
               <div className="bg-cacao-oscuro px-4 py-3">
                 <p className="text-kuma-dorado font-extrabold text-base">{pkg.name}</p>
                 <p className="text-blanco-cacao/70 text-xs">
-                  ${Number(pkg.price).toLocaleString('es-CO')} · {pkg.bags} bolsas de 250g
+                  ${Number(pkg.price).toLocaleString('es-CO')} · {pkg.bags} bolsas de 250g de chocolate 100% cacao
                 </p>
               </div>
               <div className="p-4 space-y-2">
