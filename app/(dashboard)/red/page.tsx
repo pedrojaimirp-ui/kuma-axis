@@ -67,6 +67,14 @@ export default async function RedPage() {
         unlimited={unlimited}
       />
       <NetworkLevelsCard counts={levelCounts} />
+      <a
+        href="/plan-compensacion"
+        target="_blank"
+        className="block rounded-xl bg-kuma-dorado/15 border border-kuma-dorado/30 p-4 text-center hover:bg-kuma-dorado/20"
+      >
+        <p className="text-sm font-bold text-cacao-oscuro">📊 Ver plan de compensación completo</p>
+        <p className="mt-1 text-xs text-cacao-tostado">Cuánto se gana por nivel en cada paquete</p>
+      </a>
     </div>
   )
 }
