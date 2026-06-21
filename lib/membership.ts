@@ -1,14 +1,14 @@
 export interface MembershipTier {
-  code: 'iniciado' | 'embajador' | 'lider' | 'elite' | 'fundador'
+  code: 'catador' | 'chocolatero' | 'maestro_cacaotero' | 'cacao_de_oro' | 'fundador'
   emoji: string
   label: string
 }
 
 const TIERS: MembershipTier[] = [
-  { code: 'iniciado', emoji: '🥉', label: 'Iniciado KÚMA CACAO AXIS' },
-  { code: 'embajador', emoji: '🥈', label: 'Embajador KÚMA CACAO AXIS' },
-  { code: 'lider', emoji: '🥇', label: 'Líder KÚMA CACAO AXIS' },
-  { code: 'elite', emoji: '💎', label: 'Élite KÚMA CACAO AXIS' },
+  { code: 'catador', emoji: '🍫', label: 'Catador KÚMA CACAO AXIS' },
+  { code: 'chocolatero', emoji: '🌱', label: 'Chocolatero KÚMA CACAO AXIS' },
+  { code: 'maestro_cacaotero', emoji: '🏅', label: 'Maestro Cacaotero KÚMA CACAO AXIS' },
+  { code: 'cacao_de_oro', emoji: '🌟', label: 'Cacao de Oro KÚMA CACAO AXIS' },
 ]
 
 const FUNDADOR_TIER: MembershipTier = {

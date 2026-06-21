@@ -59,10 +59,10 @@ export default async function TarjetaPage() {
       <div className="rounded-xl bg-white p-4 shadow-sm space-y-2">
         <p className="text-sm font-bold text-cacao-oscuro">Cómo subir de nivel</p>
         <div className="space-y-1.5 text-sm text-cacao-tostado">
-          <p>🥉 Iniciado — recién registrado</p>
-          <p>🥈 Embajador — 5 o más referidos directos activos</p>
-          <p>🥇 Líder — 15 o más personas en tu red total</p>
-          <p>💎 Élite — 50 o más personas en tu red total</p>
+          <p>🍫 Catador — recién registrado</p>
+          <p>🌱 Chocolatero — 5 o más referidos directos activos</p>
+          <p>🏅 Maestro Cacaotero — 15 o más personas en tu red total</p>
+          <p>🌟 Cacao de Oro — 50 o más personas en tu red total</p>
           <p>👑 Fundador — cuenta de dueño de KÚMA CACAO AXIS</p>
         </div>
       </div>
