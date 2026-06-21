@@ -14,7 +14,7 @@ export default async function TarjetaPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('full_name, referral_code, created_at')
+    .select('full_name, referral_code, created_at, role')
     .eq('id', user.id)
     .single()
 
@@ -34,7 +34,7 @@ export default async function TarjetaPage() {
   const totalNetwork = networkRows.length
   const directReferrals = networkRows.filter((row) => row.level === 1).length
 
-  const tier = getMembershipTier(directReferrals, totalNetwork)
+  const tier = getMembershipTier(directReferrals, totalNetwork, profile.role)
   const referralLink = `${SITE_URL}/register?ref=${profile.referral_code}`
   const qrDataUrl = await QRCode.toDataURL(referralLink, { margin: 0, width: 200 })
 
@@ -63,6 +63,7 @@ export default async function TarjetaPage() {
           <p>🥈 Embajador — 5 o más referidos directos activos</p>
           <p>🥇 Líder — 15 o más personas en tu red total</p>
           <p>💎 Élite — 50 o más personas en tu red total</p>
+          <p>👑 Fundador — cuenta de dueño de KÚMA CACAO AXIS</p>
         </div>
       </div>
 

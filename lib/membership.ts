@@ -1,5 +1,5 @@
 export interface MembershipTier {
-  code: 'iniciado' | 'embajador' | 'lider' | 'elite'
+  code: 'iniciado' | 'embajador' | 'lider' | 'elite' | 'fundador'
   emoji: string
   label: string
 }
@@ -11,7 +11,18 @@ const TIERS: MembershipTier[] = [
   { code: 'elite', emoji: '💎', label: 'Élite KÚMA CACAO AXIS' },
 ]
 
-export function getMembershipTier(directReferrals: number, totalNetwork: number): MembershipTier {
+const FUNDADOR_TIER: MembershipTier = {
+  code: 'fundador',
+  emoji: '👑',
+  label: 'Fundador KÚMA CACAO AXIS',
+}
+
+export function getMembershipTier(
+  directReferrals: number,
+  totalNetwork: number,
+  role?: string
+): MembershipTier {
+  if (role === 'owner') return FUNDADOR_TIER
   if (totalNetwork >= 50) return TIERS[3]
   if (totalNetwork >= 15) return TIERS[2]
   if (directReferrals >= 5) return TIERS[1]
