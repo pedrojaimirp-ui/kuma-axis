@@ -68,6 +68,13 @@ export default async function RedPage() {
       />
       <NetworkLevelsCard counts={levelCounts} />
       <a
+        href="/red/tarjeta"
+        className="block rounded-xl bg-cacao-oscuro p-4 text-center hover:opacity-90"
+      >
+        <p className="text-sm font-bold text-kuma-dorado">🎫 Ver mi tarjeta de membresía</p>
+        <p className="mt-1 text-xs text-blanco-cacao/60">Tu nivel, tu red y tu código QR</p>
+      </a>
+      <a
         href="/plan-compensacion"
         target="_blank"
         className="block rounded-xl bg-kuma-dorado/15 border border-kuma-dorado/30 p-4 text-center hover:bg-kuma-dorado/20"
