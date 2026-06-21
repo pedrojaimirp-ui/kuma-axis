@@ -89,41 +89,56 @@ export default async function AdminPage() {
     console.error('platform_settings select failed:', settingsError.message)
   }
 
+  // ── Excluir admin/owner de las estadísticas del fondo (giros de demostración) ──
+  const { data: staffProfiles } = await supabase
+    .from('profiles')
+    .select('id')
+    .in('role', ['admin', 'owner'])
+
+  const staffIds = new Set((staffProfiles ?? []).map((p) => p.id))
+
   // ── Fondo Ruleta: puntos emitidos por día (últimos 7 días) ──────────────
-  const { data: spinsByDay } = await supabase
+  const { data: spinsByDayRaw } = await supabase
     .from('spin_history')
-    .select('prize_amount, created_at')
+    .select('user_id, prize_amount, created_at')
     .gte('created_at', new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString())
     .order('created_at', { ascending: false })
 
+  const spinsByDay = (spinsByDayRaw ?? []).filter((s) => !staffIds.has(s.user_id))
+
   // Agrupar por fecha
   const spinDayMap: Record<string, number> = {}
-  for (const s of (spinsByDay ?? [])) {
+  for (const s of spinsByDay) {
     const day = new Date(s.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })
     spinDayMap[day] = (spinDayMap[day] ?? 0) + Number(s.prize_amount)
   }
   const totalPuntosEmitidos7d = Object.values(spinDayMap).reduce((a, b) => a + b, 0)
 
-  // ── Cupones pendientes y usados ─────────────────────────────────────────
-  const { data: vouchersAvailable } = await supabase
+  // ── Cupones pendientes y usados (excluyendo admin/owner) ─────────────────
+  const { data: vouchersAvailableRaw } = await supabase
     .from('reward_vouchers')
-    .select('discount_amount')
+    .select('user_id, discount_amount')
     .eq('status', 'available')
 
-  const { data: vouchersUsed } = await supabase
+  const { data: vouchersUsedRaw } = await supabase
     .from('reward_vouchers')
-    .select('discount_amount')
+    .select('user_id, discount_amount')
     .eq('status', 'used')
 
-  const fondoPendiente = (vouchersAvailable ?? []).reduce((a, v) => a + Number(v.discount_amount), 0)
-  const fondoEntregado = (vouchersUsed ?? []).reduce((a, v) => a + Number(v.discount_amount), 0)
+  const vouchersAvailable = (vouchersAvailableRaw ?? []).filter((v) => !staffIds.has(v.user_id))
+  const vouchersUsed = (vouchersUsedRaw ?? []).filter((v) => !staffIds.has(v.user_id))
 
-  // ── Puntos totales en circulación ───────────────────────────────────────
-  const { data: walletPts } = await supabase
+  const fondoPendiente = vouchersAvailable.reduce((a, v) => a + Number(v.discount_amount), 0)
+  const fondoEntregado = vouchersUsed.reduce((a, v) => a + Number(v.discount_amount), 0)
+
+  // ── Puntos totales en circulación (excluyendo admin/owner) ───────────────
+  const { data: walletPtsRaw } = await supabase
     .from('wallets')
-    .select('loyalty_points_balance')
+    .select('user_id, loyalty_points_balance')
 
-  const puntosEnCirculacion = (walletPts ?? []).reduce((a, w) => a + Number(w.loyalty_points_balance), 0)
+  const walletPts = (walletPtsRaw ?? []).filter((w) => !staffIds.has(w.user_id))
+
+  const puntosEnCirculacion = walletPts.reduce((a, w) => a + Number(w.loyalty_points_balance), 0)
 
   return (
     <div className="min-h-screen bg-blanco-cacao p-4">
