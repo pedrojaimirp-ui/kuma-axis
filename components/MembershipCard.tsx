@@ -16,34 +16,42 @@ export function MembershipCard({
   qrDataUrl: string
 }) {
   return (
-    <div className="rounded-2xl overflow-hidden shadow-lg border border-kuma-dorado/30 bg-gradient-to-br from-[#3b2007] to-cacao-oscuro p-5 relative">
-      <span className="absolute -top-4 -right-4 text-8xl opacity-[0.06] select-none pointer-events-none">🍫</span>
+    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-lg border border-kuma-dorado/30">
+      <img
+        src="/cards/membership-bg.png"
+        alt="Tarjeta de membresía KÚMA CACAO AXIS"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
 
-      <p className="text-[10px] font-bold tracking-[0.25em] text-kuma-dorado uppercase">KÚMA CACAO AXIS</p>
-      <p className="text-[10px] text-blanco-cacao/40 mb-4">Tarjeta de membresía oficial</p>
-
-      <p className="text-lg font-extrabold text-blanco-cacao mb-2">{fullName}</p>
-
-      <div className="inline-flex items-center gap-1.5 rounded-full bg-kuma-dorado/15 border border-kuma-dorado/50 px-3 py-1 mb-4">
-        <span>{tier.emoji}</span>
-        <span className="text-xs font-bold text-kuma-dorado">{tier.label}</span>
+      <div className="absolute left-[6%] bottom-[7%] max-w-[55%]">
+        <p className="text-[clamp(10px,2.6vw,15px)] font-extrabold text-blanco-cacao leading-tight truncate">
+          {fullName}
+        </p>
+        <p className="text-[clamp(8px,1.7vw,11px)] font-bold text-kuma-dorado tracking-wide mt-0.5">
+          {tier.emoji} {tier.label}
+        </p>
+        <p className="text-[clamp(6px,1.3vw,9px)] text-blanco-cacao/50 mt-1">
+          Red total: {totalNetwork} personas
+        </p>
       </div>
 
-      <div className="flex items-end justify-between border-t border-blanco-cacao/10 pt-3">
-        <div className="flex gap-5">
-          <div>
-            <p className="text-[9px] text-blanco-cacao/40 uppercase tracking-wide">Red total</p>
-            <p className="text-sm font-bold text-blanco-cacao">{totalNetwork} personas</p>
-          </div>
-          <div>
-            <p className="text-[9px] text-blanco-cacao/40 uppercase tracking-wide">Código</p>
-            <p className="text-sm font-bold text-blanco-cacao">{referralCode}</p>
-          </div>
+      <div className="absolute right-[6%] bottom-[7%] flex items-end gap-2">
+        <div className="text-right">
+          <p className="text-[clamp(6px,1.3vw,9px)] text-blanco-cacao/50">Código</p>
+          <p className="text-[clamp(8px,1.8vw,12px)] font-bold text-kuma-dorado tracking-wide">
+            {referralCode}
+          </p>
         </div>
-        <img src={qrDataUrl} alt="Código QR de invitación" className="h-12 w-12 rounded-md bg-blanco-cacao p-1" />
+        <img
+          src={qrDataUrl}
+          alt="Código QR de invitación"
+          className="h-[clamp(28px,9vw,52px)] w-[clamp(28px,9vw,52px)] rounded bg-blanco-cacao p-0.5"
+        />
       </div>
 
-      <p className="text-center text-[9px] text-blanco-cacao/30 mt-3">Miembro desde {memberSince}</p>
+      <p className="absolute left-1/2 -translate-x-1/2 bottom-[1.5%] text-[clamp(6px,1.2vw,8px)] text-blanco-cacao/40">
+        Miembro desde {memberSince}
+      </p>
     </div>
   )
 }
