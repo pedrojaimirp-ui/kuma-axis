@@ -9,6 +9,18 @@ export default async function RuletaPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profileError) {
+    console.error('profiles select failed:', profileError.message)
+  }
+
+  const isStaff = !!profile && ['admin', 'owner'].includes(profile.role)
+
   const credits = await claimDailySpins()
 
   const { data: history, error: historyError } = await supabase
@@ -28,6 +40,7 @@ export default async function RuletaPage() {
       <RouletteClient
         initialSpins={credits.daily_spins_remaining + credits.referral_spins_balance}
         initialHistory={(history as SpinHistoryEntry[] | null) ?? []}
+        unlimited={isStaff}
       />
     </div>
   )

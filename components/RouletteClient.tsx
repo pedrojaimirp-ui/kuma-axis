@@ -17,9 +17,11 @@ const TICK_INTERVAL_MS = 120
 export function RouletteClient({
   initialSpins,
   initialHistory,
+  unlimited = false,
 }: {
   initialSpins: number
   initialHistory: SpinHistoryEntry[]
+  unlimited?: boolean
 }) {
   const [spinsAvailable, setSpinsAvailable] = useState(initialSpins)
   const [rotation, setRotation] = useState(0)
@@ -35,7 +37,7 @@ export function RouletteClient({
   }
 
   async function handleSpin() {
-    if (spinsAvailable <= 0 || spinning) return
+    if ((!unlimited && spinsAvailable <= 0) || spinning) return
     setSpinning(true)
     setResultMessage(null)
 
@@ -74,7 +76,7 @@ export function RouletteClient({
       setResultMessage(
         `¡Ganaste +${result.prize_amount.toLocaleString('es-CO')} Puntos KÚMA! 🍫🎉`
       )
-      setSpinsAvailable((n) => n - 1)
+      if (!unlimited) setSpinsAvailable((n) => n - 1)
     } else {
       if (audio) playAgain(audio)
       setResultMessage('🍫 Casi... ¡prueba otra vez!')
@@ -99,8 +101,12 @@ export function RouletteClient({
     <div className="space-y-4">
       <div className="rounded-xl bg-white p-4 shadow-sm">
         <p className="text-cacao-tostado">
-          Tienes <span className="font-bold text-cacao-oscuro">{spinsAvailable}</span> giro
-          {spinsAvailable === 1 ? '' : 's'} disponible{spinsAvailable === 1 ? '' : 's'}
+          {unlimited ? (
+            <>Tienes giros <span className="font-bold text-cacao-oscuro">ilimitados</span> (cuenta de administrador)</>
+          ) : (
+            <>Tienes <span className="font-bold text-cacao-oscuro">{spinsAvailable}</span> giro
+            {spinsAvailable === 1 ? '' : 's'} disponible{spinsAvailable === 1 ? '' : 's'}</>
+          )}
         </p>
 
         <div className="mt-3">
@@ -109,7 +115,7 @@ export function RouletteClient({
 
         <button
           onClick={handleSpin}
-          disabled={spinsAvailable <= 0 || spinning}
+          disabled={(!unlimited && spinsAvailable <= 0) || spinning}
           className="mt-4 w-full rounded-lg bg-kuma-dorado py-3 font-bold text-cacao-oscuro hover:opacity-90 disabled:opacity-50"
         >
           {spinning ? 'Girando...' : '¡Girar la Ruleta de Premios! 🍫'}
