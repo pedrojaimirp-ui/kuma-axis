@@ -17,13 +17,21 @@ export function ReferralLinkCard({ referralLink }: { referralLink: string }) {
 
   function handleWhatsApp() {
     const mensaje =
-      `¡Hola! 👋 Te quiero contar sobre *KÚMA*, chocolate 100% cacao puro colombiano — sin azúcar ni conservantes.\n\n` +
-      `Se vende en tres paquetes (envío incluido):\n` +
-      `🍫 Paquete Personal — $90.000\n` +
-      `🍫 Paquete Pareja — $180.000\n` +
-      `🍫 Paquete Familiar — $270.000\n\n` +
-      `Puedes registrarte gratis y hacer tu pedido directo desde la app. Si además quieres recomendar KÚMA a otras personas, ganas comisiones reales por cada compra.\n\n` +
-      `👉 Regístrate aquí con mi enlace:\n${referralLink}`
+      `¡Hola! 👋 Te invito a unirte a *KÚMA CACAO AXIS* — chocolate 100% cacao puro colombiano, sin azúcar ni conservantes, donde también puedes ganar comisiones por compartirlo.\n\n` +
+      `Así te registras e instalas la app en tu celular:\n\n` +
+      `1️⃣ Abre este enlace:\n${referralLink}\n\n` +
+      `2️⃣ Toca "Registrarse" y llena tus datos (nombre, celular y contraseña)\n\n` +
+      `3️⃣ Una vez dentro, toca el menú de tu navegador:\n` +
+      `📱 En Chrome (Android): los 3 puntos (⋮) arriba a la derecha\n` +
+      `🍎 En Safari (iPhone): el botón de compartir (□↑) abajo\n\n` +
+      `4️⃣ Busca la opción *"Añadir a pantalla de inicio"* o *"Instalar app"* y tócala\n\n` +
+      `5️⃣ ¡Listo! Ya te queda el ícono de KÚMA en tu celular como cualquier app 🍫\n\n` +
+      `Desde ahí puedes:\n` +
+      `🛒 Comprar tu chocolate\n` +
+      `🌳 Ver tu red y ganar comisiones\n` +
+      `🎰 Girar la Ruleta de Premios todos los días\n` +
+      `💳 Ver tu billetera de puntos\n\n` +
+      `¡Te espero adentro! 🇨🇴`
     const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`
     window.open(url, '_blank')
   }
