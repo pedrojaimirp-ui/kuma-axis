@@ -1,5 +1,13 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { FounderTeaser } from '@/components/FounderTeaser'
+import { FounderCertificate } from '@/components/FounderCertificate'
+
+const PACKAGE_LABELS: Record<string, string> = {
+  kuma1: 'Personal',
+  kuma2: 'Pareja',
+  kuma3: 'Familiar',
+}
 
 function SummaryCard({
   label,
@@ -73,6 +81,72 @@ export default async function InicioPage() {
 
   const firstName = profile?.full_name?.split(' ')[0] ?? ''
 
+  // ── Club de Fundadores: certificado real o vista previa ──────────────────
+  const { data: founderBadge } = await supabase
+    .from('founder_badges')
+    .select('package_code, founder_number')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  let founderSection: React.ReactNode = null
+
+  if (founderBadge) {
+    founderSection = (
+      <div className="space-y-2">
+        <FounderCertificate
+          packageCode={founderBadge.package_code}
+          founderNumber={founderBadge.founder_number}
+        />
+        <a href="/red/tarjeta" className="block text-center text-sm font-semibold text-verde-natural">
+          Ver mi tarjeta completa →
+        </a>
+      </div>
+    )
+  } else {
+    const { data: reservation } = await supabase
+      .from('reservations')
+      .select('packages(code)')
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    const reservedCode = (reservation?.packages as unknown as { code: string } | null)?.code ?? 'kuma1'
+
+    const { data: pkg } = await supabase
+      .from('packages')
+      .select('founder_cap')
+      .eq('code', reservedCode)
+      .single()
+
+    const cap = pkg?.founder_cap ?? 0
+
+    const { data: takenRows } = await supabase
+      .from('founder_badges')
+      .select('user_id, profiles(role)')
+      .eq('package_code', reservedCode)
+
+    const taken = (takenRows ?? []).filter((row) => {
+      const role = (row.profiles as unknown as { role: string } | null)?.role
+      return role !== 'admin' && role !== 'owner'
+    }).length
+
+    const remaining = Math.max(cap - taken, 0)
+
+    founderSection = (
+      <FounderTeaser
+        packageCode={reservedCode}
+        packageLabel={PACKAGE_LABELS[reservedCode] ?? 'Personal'}
+        remaining={remaining}
+        cap={cap}
+        ctaHref={reservation ? `/tienda/comprar/${reservedCode}` : '/reservar'}
+        ctaLabel={
+          reservation
+            ? '🔓 Completa tu compra y asegura tu certificado'
+            : '🍫 Reserva gratis y entra al Club de Fundadores'
+        }
+      />
+    )
+  }
+
   return (
     <div className="space-y-4">
       {profile?.badge && (
@@ -95,6 +169,9 @@ export default async function InicioPage() {
           🍫 Chocolate sin azúcar · Sin conservantes
         </div>
       </div>
+
+      {/* Club de Fundadores: certificado o vista previa */}
+      {founderSection}
 
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-3 gap-3">
