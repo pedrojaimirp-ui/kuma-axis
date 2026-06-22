@@ -4,6 +4,7 @@ import { AdminOrderRow } from '@/components/AdminOrderRow'
 import { AdminWithdrawalRow } from '@/components/AdminWithdrawalRow'
 import { AdminPaidOrderRow } from '@/components/AdminPaidOrderRow'
 import { AdminReturnRow } from '@/components/AdminReturnRow'
+import { AdminReleaseFoundersButton } from '@/components/AdminReleaseFoundersButton'
 import type { AdminOrder, AdminWithdrawal, AdminReturnRequest } from '@/lib/types'
 
 export default async function AdminPage() {
@@ -167,6 +168,10 @@ export default async function AdminPage() {
             </p>
           </div>
         )}
+      </div>
+
+      <div className="mb-6">
+        <AdminReleaseFoundersButton />
       </div>
 
       {/* ── FONDO RULETA KÚMA ── */}

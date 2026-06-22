@@ -81,16 +81,16 @@ export default async function InicioPage() {
 
   const firstName = profile?.full_name?.split(' ')[0] ?? ''
 
-  // ── Club de Fundadores: certificado real o vista previa ──────────────────
+  // ── Club de Fundadores: certificado real, apartado o vista previa ────────
   const { data: founderBadge } = await supabase
     .from('founder_badges')
-    .select('package_code, founder_number')
+    .select('package_code, founder_number, confirmed')
     .eq('user_id', user.id)
     .maybeSingle()
 
   let founderSection: React.ReactNode = null
 
-  if (founderBadge) {
+  if (founderBadge?.confirmed) {
     founderSection = (
       <div className="space-y-2">
         <FounderCertificate
@@ -99,6 +99,26 @@ export default async function InicioPage() {
         />
         <a href="/red/tarjeta" className="block text-center text-sm font-semibold text-verde-natural">
           Ver mi tarjeta completa →
+        </a>
+      </div>
+    )
+  } else if (founderBadge) {
+    founderSection = (
+      <div className="space-y-2">
+        <FounderCertificate
+          packageCode={founderBadge.package_code}
+          founderNumber={founderBadge.founder_number}
+        />
+        <a
+          href={`/tienda/comprar/${founderBadge.package_code}`}
+          className="block rounded-xl bg-kuma-dorado/15 border border-kuma-dorado/40 p-3 text-center"
+        >
+          <p className="text-sm font-bold text-cacao-oscuro">
+            ⚠️ Tu cupo está apartado, no confirmado todavía
+          </p>
+          <p className="text-xs text-cacao-tostado mt-0.5">
+            Complétalo pagando antes de la apertura oficial o podrías perderlo →
+          </p>
         </a>
       </div>
     )

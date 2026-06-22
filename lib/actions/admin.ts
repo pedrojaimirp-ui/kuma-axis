@@ -79,3 +79,13 @@ export async function reviewReturn(returnId: string, status: 'approved' | 'rejec
     throw new Error('No se pudo actualizar la solicitud de devolución.')
   }
 }
+
+export async function releaseUnconfirmedFounderBadges() {
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase.rpc('release_unconfirmed_founder_badges')
+  if (error) {
+    console.error('release_unconfirmed_founder_badges failed:', error.message)
+    throw new Error('No se pudieron liberar los cupos no confirmados.')
+  }
+}
