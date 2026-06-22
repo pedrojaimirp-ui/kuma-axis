@@ -1,4 +1,4 @@
-import type { MembershipTier } from '@/lib/membership'
+import type { MembershipTier, FounderBadgeStyle } from '@/lib/membership'
 
 export function MembershipCard({
   fullName,
@@ -7,6 +7,7 @@ export function MembershipCard({
   referralCode,
   memberSince,
   qrDataUrl,
+  founder,
 }: {
   fullName: string
   tier: MembershipTier
@@ -14,14 +15,37 @@ export function MembershipCard({
   referralCode: string
   memberSince: string
   qrDataUrl: string
+  founder?: { number: number; cap: number; style: FounderBadgeStyle }
 }) {
+  const borderStyle = founder
+    ? { boxShadow: `0 0 0 1.5px ${founder.style.borderColor}` }
+    : undefined
+
   return (
-    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-lg border border-kuma-dorado/30">
+    <div
+      className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl shadow-lg border border-kuma-dorado/30"
+      style={borderStyle}
+    >
       <img
         src="/cards/membership-bg.png"
         alt="Tarjeta de membresía KÚMA CACAO AXIS"
         className="absolute inset-0 h-full w-full object-cover"
       />
+
+      {founder && (
+        <div
+          className="absolute left-[6%] top-[6%] inline-flex items-center gap-1 rounded-md px-2 py-0.5 bg-black/40"
+          style={{ boxShadow: `inset 0 0 0 1px ${founder.style.borderColor}` }}
+        >
+          <span className="text-[clamp(8px,1.8vw,11px)]">{founder.style.emoji}</span>
+          <span
+            className="text-[clamp(7px,1.5vw,10px)] font-bold tracking-wide"
+            style={{ color: founder.style.borderColor }}
+          >
+            Fundador #{String(founder.number).padStart(3, '0')} / {founder.cap}
+          </span>
+        </div>
+      )}
 
       <div className="absolute left-[6%] bottom-[7%] max-w-[55%]">
         <p className="text-[clamp(10px,2.6vw,15px)] font-extrabold text-blanco-cacao leading-tight truncate">

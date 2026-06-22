@@ -3,7 +3,7 @@ import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase/server'
 import { MembershipCard } from '@/components/MembershipCard'
 import { ShareMembershipButton } from '@/components/ShareMembershipButton'
-import { getMembershipTier } from '@/lib/membership'
+import { getMembershipTier, getFounderBadgeStyle } from '@/lib/membership'
 
 const SITE_URL = 'https://kuma-axis.vercel.app'
 
@@ -38,6 +38,31 @@ export default async function TarjetaPage() {
   const referralLink = `${SITE_URL}/register?ref=${profile.referral_code}`
   const qrDataUrl = await QRCode.toDataURL(referralLink, { margin: 0, width: 200 })
 
+  const { data: founderBadge, error: founderError } = await supabase
+    .from('founder_badges')
+    .select('package_code, founder_number')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (founderError) {
+    console.error('founder_badges select failed:', founderError.message)
+  }
+
+  let founder: { number: number; cap: number; style: ReturnType<typeof getFounderBadgeStyle> } | undefined
+  if (founderBadge) {
+    const { data: pkg } = await supabase
+      .from('packages')
+      .select('founder_cap')
+      .eq('code', founderBadge.package_code)
+      .single()
+
+    founder = {
+      number: founderBadge.founder_number,
+      cap: pkg?.founder_cap ?? 0,
+      style: getFounderBadgeStyle(founderBadge.package_code),
+    }
+  }
+
   const memberSince = new Date(profile.created_at).toLocaleDateString('es-CO', {
     month: 'long',
     year: 'numeric',
@@ -54,6 +79,7 @@ export default async function TarjetaPage() {
         referralCode={profile.referral_code}
         memberSince={memberSince}
         qrDataUrl={qrDataUrl}
+        founder={founder}
       />
 
       <div className="rounded-xl bg-white p-4 shadow-sm space-y-2">

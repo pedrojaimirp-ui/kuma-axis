@@ -28,3 +28,19 @@ export function getMembershipTier(
   if (directReferrals >= 5) return TIERS[1]
   return TIERS[0]
 }
+
+export interface FounderBadgeStyle {
+  borderColor: string
+  emoji: string
+  packageLabel: string
+}
+
+const FOUNDER_STYLES: Record<string, FounderBadgeStyle> = {
+  kuma1: { borderColor: '#C17817', emoji: '🍫', packageLabel: 'Personal' },
+  kuma2: { borderColor: '#C9C9C9', emoji: '🍫🍫', packageLabel: 'Pareja' },
+  kuma3: { borderColor: '#F2B705', emoji: '🍫🍫🍫', packageLabel: 'Familiar' },
+}
+
+export function getFounderBadgeStyle(packageCode: string): FounderBadgeStyle {
+  return FOUNDER_STYLES[packageCode] ?? FOUNDER_STYLES.kuma1
+}
