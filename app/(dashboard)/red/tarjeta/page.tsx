@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import QRCode from 'qrcode'
 import { createClient } from '@/lib/supabase/server'
 import { MembershipCard } from '@/components/MembershipCard'
+import { FounderCertificate } from '@/components/FounderCertificate'
 import { ShareMembershipButton } from '@/components/ShareMembershipButton'
 import { getMembershipTier, getFounderBadgeStyle } from '@/lib/membership'
 
@@ -71,6 +72,13 @@ export default async function TarjetaPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold text-cacao-oscuro">Mi Tarjeta de Membresía 🎫</h1>
+
+      {founderBadge && (
+        <FounderCertificate
+          packageCode={founderBadge.package_code}
+          founderNumber={founderBadge.founder_number}
+        />
+      )}
 
       <MembershipCard
         fullName={profile.full_name}
