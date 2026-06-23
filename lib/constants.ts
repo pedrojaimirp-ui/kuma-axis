@@ -119,7 +119,7 @@ export const REWARD_CATALOG: RewardCatalogItem[] = [
     code: 'discount_30000',
     emoji: '💰',
     label: '$30.000 de descuento en tu compra',
-    description: 'Descuento poderoso. Casi un tercio del Paquete Personal gratis.',
+    description: 'Descuento poderoso. Casi un tercio del KÚMA ORIGEN gratis.',
     pointsCost: 2500,
     kind: 'voucher',
     voucherDiscount: 30000,
@@ -155,7 +155,7 @@ export const REWARD_CATALOG: RewardCatalogItem[] = [
   {
     code: 'free_personal',
     emoji: '🏆',
-    label: 'Paquete Personal KÚMA completo GRATIS',
+    label: 'KÚMA ORIGEN completo GRATIS',
     description: '5 bolsas de chocolate 100% cacao puro sin costo. El premio más codiciado.',
     pointsCost: 8000,
     kind: 'voucher',

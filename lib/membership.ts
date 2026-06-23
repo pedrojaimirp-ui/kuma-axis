@@ -36,9 +36,9 @@ export interface FounderBadgeStyle {
 }
 
 const FOUNDER_STYLES: Record<string, FounderBadgeStyle> = {
-  kuma1: { borderColor: '#C17817', emoji: '🍫', packageLabel: 'Personal' },
-  kuma2: { borderColor: '#C9C9C9', emoji: '🍫🍫', packageLabel: 'Pareja' },
-  kuma3: { borderColor: '#F2B705', emoji: '🍫🍫🍫', packageLabel: 'Familiar' },
+  kuma1: { borderColor: '#C17817', emoji: '🍫', packageLabel: 'Origen' },
+  kuma2: { borderColor: '#C9C9C9', emoji: '🍫🍫', packageLabel: 'Esencia' },
+  kuma3: { borderColor: '#F2B705', emoji: '🍫🍫🍫', packageLabel: 'Legado' },
 }
 
 export function getFounderBadgeStyle(packageCode: string): FounderBadgeStyle {

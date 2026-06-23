@@ -4,9 +4,9 @@ import { FounderTeaser } from '@/components/FounderTeaser'
 import { FounderCertificate } from '@/components/FounderCertificate'
 
 const PACKAGE_LABELS: Record<string, string> = {
-  kuma1: 'Personal',
-  kuma2: 'Pareja',
-  kuma3: 'Familiar',
+  kuma1: 'Origen',
+  kuma2: 'Esencia',
+  kuma3: 'Legado',
 }
 
 function SummaryCard({
@@ -154,7 +154,7 @@ export default async function InicioPage() {
     founderSection = (
       <FounderTeaser
         packageCode={reservedCode}
-        packageLabel={PACKAGE_LABELS[reservedCode] ?? 'Personal'}
+        packageLabel={PACKAGE_LABELS[reservedCode] ?? 'Origen'}
         remaining={remaining}
         cap={cap}
         ctaHref={reservation ? `/tienda/comprar/${reservedCode}` : '/reservar'}
