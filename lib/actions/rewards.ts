@@ -13,11 +13,13 @@ export async function redeemReward(code: RewardCode) {
 
   if (error) {
     console.error('redeem_loyalty_reward failed:', error.message)
-    throw new Error(
-      error.message.includes('No tienes suficientes puntos')
-        ? 'No tienes suficientes Puntos KÚMA para este premio.'
-        : 'No se pudo canjear el premio.'
-    )
+    if (error.message.includes('No tienes suficientes puntos')) {
+      throw new Error('No tienes suficientes Puntos KÚMA para este premio.')
+    }
+    if (error.message.includes('Fondo de premios temporalmente agotado')) {
+      throw new Error('El fondo de premios está temporalmente agotado. Vuelve pronto — se renueva con cada nueva venta.')
+    }
+    throw new Error('No se pudo canjear el premio.')
   }
 
   revalidatePath('/billetera')
