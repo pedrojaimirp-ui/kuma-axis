@@ -12,6 +12,11 @@
 -- esa plata disponible, y se la resta al momento de canjear. Los premios
 -- que NO cuestan dinero (giros extra) siguen funcionando igual, sin tocar
 -- el fondo.
+--
+-- Además se reestructuran los costos en puntos: ahora 1 punto = $1 peso
+-- exacto para todos los cupones con valor en dinero (antes la proporción
+-- era inconsistente, ~1 punto = $10, lo que hacía los premios demasiado
+-- accesibles). Debe coincidir con REWARD_CATALOG en lib/constants.ts.
 -- -----------------------------------------------------------------------------
 
 create or replace function public.redeem_loyalty_reward(p_reward_code text)
@@ -27,14 +32,14 @@ begin
   case p_reward_code
     when 'extra_spin'      then v_points_cost := 50;
     when 'extra_spin_3'    then v_points_cost := 120;
-    when 'discount_5000'   then v_points_cost := 500;
-    when 'discount_10000'  then v_points_cost := 1000;
-    when 'discount_30000'  then v_points_cost := 2500;
-    when 'free_bag'        then v_points_cost := 1500;
-    when 'free_2bags'      then v_points_cost := 3000;
-    when 'kit_kuma'        then v_points_cost := 6000;
-    when 'free_personal'   then v_points_cost := 8000;
-    when 'cata_chocolate'  then v_points_cost := 12000;
+    when 'discount_5000'   then v_points_cost := 5000;
+    when 'discount_10000'  then v_points_cost := 10000;
+    when 'discount_30000'  then v_points_cost := 30000;
+    when 'free_bag'        then v_points_cost := 15000;
+    when 'free_2bags'      then v_points_cost := 30000;
+    when 'kit_kuma'        then v_points_cost := 60000;
+    when 'free_personal'   then v_points_cost := 90000;
+    when 'cata_chocolate'  then v_points_cost := 120000;
     else raise exception 'Premio no válido: %', p_reward_code;
   end case;
 
