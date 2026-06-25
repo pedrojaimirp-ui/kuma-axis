@@ -5,9 +5,9 @@ const BACKGROUNDS: Record<string, string> = {
 }
 
 const NUMBER_POSITION: Record<string, { right: string; bottom: string }> = {
-  kuma1: { right: '15%', bottom: '8%' },
+  kuma1: { right: '48%', bottom: '18%' },
   kuma2: { right: '15%', bottom: '8%' },
-  kuma3: { right: '22%', bottom: '11%' },
+  kuma3: { right: '6%', bottom: '34%' },
 }
 
 export function FounderCertificate({
